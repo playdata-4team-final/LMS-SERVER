@@ -1,4 +1,4 @@
-package com.example.lms.mylecture.entity;
+package com.example.lms.mylecture.domain.entity;
 
 import com.example.lms.lecture.entity.Lecture;
 import com.example.lms.professor.entity.Professor;
