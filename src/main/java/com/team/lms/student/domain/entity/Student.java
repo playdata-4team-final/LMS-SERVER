@@ -1,4 +1,4 @@
-package com.team.lms.student.entity;
+package com.team.lms.student.domain.entity;
 
 import com.team.lms.major.entity.Major;
 import jakarta.persistence.Entity;

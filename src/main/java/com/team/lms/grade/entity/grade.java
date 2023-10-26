@@ -1,7 +1,7 @@
 package com.team.lms.grade.entity;
 
 import com.team.lms.lecture.domain.entity.Lecture;
-import com.team.lms.student.entity.Student;
+import com.team.lms.student.domain.entity.Student;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
