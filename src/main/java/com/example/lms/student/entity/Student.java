@@ -23,6 +23,7 @@ public class Student {
     private String studentName;
 
     private Integer year;
+    //학년
 
     private Integer studentNumber;
     private String email;
