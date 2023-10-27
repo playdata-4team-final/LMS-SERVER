@@ -1,9 +1,7 @@
 package com.team.lms.student.entity;
 
 import com.team.lms.major.entity.Major;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +16,7 @@ import java.util.UUID;
 @Builder
 public class Student {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
 
     private String studentName;

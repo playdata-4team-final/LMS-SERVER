@@ -1,13 +1,19 @@
 package com.team.lms.global.util;
 
 import com.team.lms.global.domain.response.LmsResponse;
-import com.team.lms.global.domain.entity.ErrorEntity;
+import org.springframework.http.HttpStatus;
+
+import java.time.LocalDateTime;
+
 
 public class ResponseUtil {
-    public static <T> LmsResponse<T> success(T response) {
-        return new LmsResponse<> (true, response, null);
+    public static <T> LmsResponse<T> success(T response, HttpStatus status) {
+        LocalDateTime currentTime = LocalDateTime.now();
+        return new LmsResponse<> (status, response, null, currentTime);
     }
-    public static LmsResponse<?> error(ErrorEntity e) {
-        return new LmsResponse<> (false, null, e);
+    public static <T> LmsResponse<T> error(T response, String e, HttpStatus status) {
+        LocalDateTime currentTime = LocalDateTime.now();
+        return new LmsResponse<> (status, response, e, currentTime);
     }
+
 }

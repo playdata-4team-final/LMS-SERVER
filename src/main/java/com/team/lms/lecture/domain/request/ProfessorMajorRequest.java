@@ -15,17 +15,18 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProfessorLectureRequest {
+public class ProfessorMajorRequest {
 
     private UUID professorId;
-    private Long majorId;
+    private String majorName;
+    private Boolean checkMajor;
 
-
-    public Lecture toEntity(){
-        return Lecture
+    public Major toEntity(){
+        return Major
                 .builder()
                 .professor(Professor.builder().id(professorId).build())
-                .major(Major.builder().id(majorId).build())
+                .majorName(majorName)
+                .checkMajor(checkMajor)
                 .status(Status.HOLDING)
                 .build();
     }

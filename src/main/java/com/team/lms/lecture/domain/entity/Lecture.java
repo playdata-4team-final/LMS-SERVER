@@ -21,11 +21,13 @@ public class Lecture {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String lectureName;
+    @Enumerated(EnumType.STRING)
     private Status status;
     private Integer maximumNumber;
     private Integer score;
     private String lectureComment;
     private Date lectureDate;
+    @Enumerated(EnumType.STRING)
     private Semester semester;
 
     @OneToOne
