@@ -9,6 +9,8 @@ import com.team.lms.lecture.domain.request.ProfessorLectureRequest;
 import com.team.lms.lecture.domain.request.ProfessorMajorRequest;
 import com.team.lms.lecture.domain.response.AllLectureRes;
 import com.team.lms.lecture.domain.response.AllMajorRes;
+import com.team.lms.lecture.exception.DuplicateException;
+import com.team.lms.lecture.exception.NotFoundException;
 import com.team.lms.lecture.repository.LectureRepository;
 import com.team.lms.major.entity.Major;
 import com.team.lms.major.repository.MajorRepository;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,9 +49,17 @@ public class LectureService {
         Long majorId = request.getMajorId();
         Professor existingProfessor = professorRepository.findById(professorId).orElse(null);
         Major existingMajor = majorRepository.findById(majorId).orElse(null);
+        List<Lecture> allLectureById = lectureRepository.findAllLectureById(professorId);
+
+        if(!allLectureById.isEmpty() ) {
+            if (allLectureById.get(0).getMajor().getMajorName().equals(existingMajor.getMajorName())) {
+                throw new DuplicateException("이미 신청했거나 대기중인 전공입니다.");
+            }
+        }//DUPLICATE ERROR
+
 
         if (existingProfessor == null || existingMajor == null) {
-            throw new ; //NOT FOUND ERROR
+            throw new NotFoundException("해당되는 유저나 전공이 없습니다."); //NOT FOUND ERROR
         }
 
         Lecture newLecture = Lecture.builder()
@@ -69,23 +80,67 @@ public class LectureService {
 
     //전공 등록 요청 교수(교수)
     @Transactional
-    public ResponseEntity<LmsResponse<Void>> requestMajor(ProfessorMajorRequest request){
-        majorRepository.save(request.toEntity());
-        return  ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, null, null, LocalDateTime.now()));
+    public ResponseEntity<LmsResponse<Void>> requestMajor(List<ProfessorMajorRequest> requests) {
+        for (ProfessorMajorRequest request : requests) {
+            UUID professorId = request.getProfessorId();
+
+            // 교수 정보 가져오기
+            Professor professor = professorRepository.findById(professorId)
+                    .orElseThrow(() -> new NotFoundException("해당 교수를 찾을 수 없습니다."));
+
+            // 전공 생성
+            List<String> majorNames = request.getMajorNames();
+            List<Major> majorList = new ArrayList<>();
+
+            for (String majorName : majorNames) {
+                Major major = Major.builder()
+                        .professor(professor)
+                        .majorName(majorName)
+                        .checkMajor(request.getCheckMajor())
+                        .status(Status.HOLDING)
+                        .build();
+
+                majorList.add(major);
+            }
+
+            // 전공 리스트 저장
+            majorRepository.saveAll(majorList);
+        }
+
+        // 응답 반환
+        return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, null, null, LocalDateTime.now()));
     }
 
 
     //전공 등록 요청 취소(교수)
-    @Transactional
-    public void canceltMajor(ProfessorMajorRequest request){
-        List<Major> byMajorName = majorRepository.findByMajorName(request.getMajorName());
-        if(byMajorName.isEmpty()) {
-            System.out.println("신청 대기중인 전공이 없습니다."); //NOT_FOUND_ERROR
-        }
-        majorRepository.delete(request.toEntity());
+        @Transactional
+        public ResponseEntity<LmsResponse<Void>> cancelMajor(List<ProfessorMajorRequest> requests){
+
+            for (ProfessorMajorRequest request : requests) {
+                UUID professorId = request.getProfessorId();
+
+                // 교수 정보 가져오기
+                Professor professor = professorRepository.findById(professorId)
+                        .orElseThrow(() -> new NotFoundException("해당 교수를 찾을 수 없습니다."));
+
+                List<String> majorNames = request.getMajorNames();
+                if (!majorNames.isEmpty()) {
+                    String majorName = majorNames.get(0);
+
+                    // professorId와 majorName으로 전공 삭제
+                    majorRepository.deleteByMajorNameAndProfessorId(professorId,majorName);
+                }
+                throw new NotFoundException("신청 대기중인 전공이 없습니다.");
+            }
+
+            // 응답 반환
+            return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, null, null, LocalDateTime.now()));
     }
 
-    // 전공 요청 목록 조회(교수)
+
+
+
+        // 전공 요청 목록 조회(교수)
     @Transactional
     public LmsResponse<List<AllMajorRes>> agreeMajorFindById(UUID id){
         List<Major> allMajorById = majorRepository.findAllMajorById(id);
@@ -175,6 +230,7 @@ public class LectureService {
         }
 
         lectureRepository.save(request.toEntity());
+
     }
 
 

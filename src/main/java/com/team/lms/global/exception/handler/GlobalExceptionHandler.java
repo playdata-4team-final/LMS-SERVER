@@ -1,6 +1,8 @@
 package com.team.lms.global.exception.handler;
 
-import com.team.lms.global.exception.InternalServerException;
+import com.team.lms.global.exception.ClientException;
+import com.team.lms.lecture.exception.DuplicateException;
+import com.team.lms.lecture.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +18,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
 
-    @ExceptionHandler(InternalServerException.class)
-    protected ResponseEntity<Object> handleInternalServerException(
-            InternalServerException ex) {
-        String responseBody = "Internal Server Error: " + ex.getMessage();
-        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    @ExceptionHandler(ClientException.class)
+    protected ResponseEntity<Object> handleClientException(
+            ClientException ex) {
+        String responseBody = "Client Exception: " + ex.getMessage();
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    protected ResponseEntity<Object> handleNotFondException(
+            NotFoundException ex) {
+        String responseBody = "NotFound Exception: " + ex.getMessage();
+        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DuplicateException.class)
+    protected ResponseEntity<Object> handleDuplicateException(
+            DuplicateException ex) {
+        String responseBody = "Duplicate Exception: " + ex.getMessage();
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
 

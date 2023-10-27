@@ -24,37 +24,49 @@ public class LectureController {
 
     private final LectureService lectureService;
 
+    //요청강의 조회(교수)
     @GetMapping("/findLecture")
     public ResponseEntity<LmsResponse<List<AllLectureRes>>> agreeLectureFindById(@RequestParam("id") UUID id) {
         LmsResponse<List<AllLectureRes>> listLmsResponse = lectureService.agreeLectureFindById(id);
         HttpStatus status = listLmsResponse.getCode();
         List<AllLectureRes> lectures = listLmsResponse.getData();
-        return ResponseEntity.ok(new LmsResponse<>(status, lectures, null, LocalDateTime.now()));
+        String errorCode = null;
+        if (status != HttpStatus.OK) {
+            errorCode = status.toString();
+        }
+        return ResponseEntity.ok(new LmsResponse<>(status, lectures, errorCode, LocalDateTime.now()));
     }
 
+    //요청 전공 조회(교수)
     @GetMapping("/findMajor")
     public ResponseEntity<LmsResponse<List<AllMajorRes>>> agreeMajorFindById(@RequestParam("id") UUID id) {
-        List<AllMajorRes> majors = lectureService.agreeMajorFindById(id).getData();
-        return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, majors, null, LocalDateTime.now()));
+        LmsResponse<List<AllMajorRes>> listLmsResponse = lectureService.agreeMajorFindById(id);
+        HttpStatus status = listLmsResponse.getCode();
+        List<AllMajorRes> majors = listLmsResponse.getData();
+        String errorCode = null;
+        if (status != HttpStatus.OK) {
+            errorCode = status.toString();
+        }
+        return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, majors, errorCode, LocalDateTime.now()));
     }
 
     @PostMapping("/requestLecture")
     public ResponseEntity<LmsResponse<Void>> requestLecture(@RequestBody ProfessorLectureRequest request) {
-
         lectureService.requestLecture(request);
         return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, null, null, LocalDateTime.now()));
     }
 
-    @PostMapping("/requestMajor")
-    public ResponseEntity<LmsResponse<Void>> requestMajor(@RequestBody ProfessorMajorRequest request){
 
-        lectureService.requestMajor(request);
+    @PostMapping("/requestMajor")
+    public ResponseEntity<LmsResponse<Void>> requestMajor(@RequestBody List<ProfessorMajorRequest> requests) {
+        lectureService.requestMajor(requests);
         return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, null, null, LocalDateTime.now()));
     }
 
+
     @DeleteMapping("/cancelMajor")
-    public ResponseEntity<LmsResponse<Void>> cancelMajor(@RequestBody ProfessorMajorRequest request) {
-        lectureService.canceltMajor(request);
+    public ResponseEntity<LmsResponse<Void>> cancelMajor(@RequestBody List<ProfessorMajorRequest> requests) {
+        lectureService.cancelMajor(requests);
         return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, null, null, LocalDateTime.now()));
     }
 

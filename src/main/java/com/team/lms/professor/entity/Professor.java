@@ -26,8 +26,8 @@ public class Professor {
     private String phNumber;
     private String email;
 
-    @OneToOne
-    private Major major;
+    @OneToMany
+    private List<Major> majors;
 
     @OneToMany(mappedBy = "professor")
     private List<Lecture> lecture;

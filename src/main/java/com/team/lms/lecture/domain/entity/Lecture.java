@@ -20,19 +20,21 @@ public class Lecture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String lectureName;
     @Enumerated(EnumType.STRING)
     private Status status;
+    @Column(nullable = false)
     private Integer maximumNumber;
+    @Column(nullable = false)
     private Integer score;
     private String lectureComment;
+    @Column(nullable = false)
     private Date lectureDate;
     @Enumerated(EnumType.STRING)
     private Semester semester;
-
     @OneToOne
     private Major major;
-
     @ManyToOne
     private Professor professor;
 }

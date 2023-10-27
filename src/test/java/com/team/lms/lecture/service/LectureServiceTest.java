@@ -49,7 +49,6 @@ class LectureServiceTest {
         Professor professor1 = Professor.builder()
                 .id(UUID.fromString("7d6f858a-d8bd-4074-8c6e-d9c47e21b1a6"))
                 .professorName("John Doe")
-                .major(Major.builder().id(1L).build())
                 .phNumber("123-456-7890")
                 .email("john.doe@example.com")
                 .build();
@@ -58,7 +57,7 @@ class LectureServiceTest {
         professorRepository.save(professor1);
 
         // 임의의 ProfessorLectureRequest 객체 생성
-        ProfessorLectureRequest request = new ProfessorLectureRequest(professor1.getId(), professor1.getMajor().getId());
+        ProfessorLectureRequest request = new ProfessorLectureRequest(professor1.getId(), professor1.getMajors().get(0).getId());
 
         // Mock Repository의 동작 설정
         when(lectureRepository.findAllLectureById(any(UUID.class))).thenReturn(new ArrayList<>()); // 강의가 존재하지 않는 상태로 설정

@@ -12,9 +12,10 @@ import java.util.UUID;
 public interface MajorRepository
         extends JpaRepository<Major, Long> {
 
-    @Query("SELECT m FROM Major as m WHERE m.majorName = :majorName")
-    public List<Major> findByMajorName(@Param("majorName") String majorName);
+
+    @Query("select m FROM Major AS m where m.professor.id = :professorId and m.majorName = :majorName")
+    public void deleteByMajorNameAndProfessorId(@Param("professorId")UUID professorId, @Param("majorName")String majorName);
 
     @Query("select m from Major as m where m.professor.id = :id")
-    public List<Major> findAllMajorById(@Param("") UUID id);
+    public List<Major> findAllMajorById(@Param("id") UUID id);
 }

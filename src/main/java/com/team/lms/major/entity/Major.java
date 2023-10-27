@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,14 +20,15 @@ public class Major {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private Boolean checkMajor;
+
+    @Column(unique = true)//여기서 전공은 유일한 값을 가져야함.
     private String majorName;
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @OneToOne
+    @ManyToOne
     private Professor professor;
 
 }
