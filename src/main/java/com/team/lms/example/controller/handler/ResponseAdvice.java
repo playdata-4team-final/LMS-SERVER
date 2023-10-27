@@ -1,6 +1,6 @@
-package com.team.lms.global.controller.handler;
+package com.team.lms.example.controller.handler;
 
-import com.team.lms.global.util.ResponseUtil;
+import com.team.lms.example.util.ResponseUtil;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

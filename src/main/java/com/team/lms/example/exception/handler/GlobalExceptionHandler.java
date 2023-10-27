@@ -1,6 +1,6 @@
-package com.team.lms.global.exception.handler;
+package com.team.lms.example.exception.handler;
 
-import com.team.lms.global.exception.ClientException;
+import com.team.lms.example.exception.ClientException;
 import com.team.lms.lecture.exception.DuplicateException;
 import com.team.lms.lecture.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
 package com.team.lms.lecture.service;
 
 
-import com.team.lms.global.domain.response.LmsResponse;
+import com.team.lms.example.domain.response.LmsResponse;
 import com.team.lms.lecture.domain.entity.Lecture;
 import com.team.lms.lecture.domain.entity.Status;
 import com.team.lms.lecture.domain.request.AdminLectureRequest;
@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 

@@ -1,15 +1,9 @@
 package com.team.lms.lecture.service;
 
-import com.team.lms.global.admin.repository.AdminRepository;
-import com.team.lms.global.domain.response.LmsResponse;
+import com.team.lms.example.admin.repository.AdminRepository;
 import com.team.lms.lecture.domain.entity.Lecture;
-import com.team.lms.lecture.domain.entity.Semester;
-import com.team.lms.lecture.domain.entity.Status;
-import com.team.lms.lecture.domain.request.AdminLectureRequest;
 import com.team.lms.lecture.domain.request.ProfessorLectureRequest;
-import com.team.lms.lecture.domain.response.AllLectureRes;
 import com.team.lms.lecture.repository.LectureRepository;
-import com.team.lms.major.entity.Major;
 import com.team.lms.professor.entity.Professor;
 import com.team.lms.professor.repository.ProfessorRepository;
 

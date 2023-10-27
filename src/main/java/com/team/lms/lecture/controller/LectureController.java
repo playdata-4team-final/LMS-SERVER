@@ -1,7 +1,7 @@
 package com.team.lms.lecture.controller;
 
 
-import com.team.lms.global.domain.response.LmsResponse;
+import com.team.lms.example.domain.response.LmsResponse;
 import com.team.lms.lecture.domain.request.AdminLectureRequest;
 import com.team.lms.lecture.domain.request.ProfessorLectureRequest;
 import com.team.lms.lecture.domain.request.ProfessorMajorRequest;

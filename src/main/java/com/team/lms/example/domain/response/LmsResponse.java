@@ -1,4 +1,4 @@
-package com.team.lms.global.domain.response;
+package com.team.lms.example.domain.response;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
