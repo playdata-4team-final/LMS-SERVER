@@ -29,6 +29,7 @@ public class AdminLectureRequest {
     private WeekDay weekDay;
     private Integer startTime;
     private Boolean roomCheck;
+    private Status status;
 
 
     public Lecture toEntity(){
@@ -45,6 +46,7 @@ public class AdminLectureRequest {
                                 .roomCheck(roomCheck)
                                 .build())
                         .build())
+                .status(status)
                 .build();
     }
 

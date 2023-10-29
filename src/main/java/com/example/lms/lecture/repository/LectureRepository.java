@@ -20,8 +20,12 @@ public interface LectureRepository
     public List<Lecture> findAllList();
 
     @Modifying
-    @Query("UPDATE Lecture as l SET l.status = com.example.lms.lecture.domain.entity.Status.ACCEPT, l.room.roomNumber = :roomNumber, l.room.schedule.roomCheck = true, l.room.schedule.weekDay = :weekDay, l.room.schedule.startTime = :startTime, l.room.schedule.roomCheck = :roomCheck WHERE l.id = :lectureId")
-    public void updateLecture(@Param("lectureId") Long lectureId, @Param("roomNumber") Long roomNumber, @Param("weekDay")WeekDay weekDay, @Param("startTime")Integer StartTime, @Param("roomCheck")Boolean roomCheck);
+    @Query("UPDATE Lecture as l SET l.status = com.example.lms.lecture.domain.entity.Status.ACCEPT, l.room.roomNumber = :roomNumber, l.room.schedule.roomCheck = true, l.room.schedule.weekDay = :weekDay, l.room.schedule.startTime = :startTime, l.room.schedule.roomCheck = :roomCheck WHERE l.id = :lectureId and l.status = com.example.lms.lecture.domain.entity.Status.HOLDING")
+    public Lecture updateAcceptLecture(@Param("lectureId") Long lectureId, @Param("roomNumber") Long roomNumber, @Param("weekDay")WeekDay weekDay, @Param("startTime")Integer StartTime, @Param("roomCheck")Boolean roomCheck);
+
+    @Modifying
+    @Query("UPDATE Lecture as l SET l.status = com.example.lms.lecture.domain.entity.Status.DENIED, l.room.roomNumber = :roomNumber, l.room.schedule.roomCheck = true, l.room.schedule.weekDay = :weekDay, l.room.schedule.startTime = :startTime, l.room.schedule.roomCheck = :roomCheck WHERE l.id = :lectureId and l.status = com.example.lms.lecture.domain.entity.Status.HOLDING")
+    public Lecture updateDenyLecture(@Param("lectureId") Long lectureId, @Param("roomNumber") Long roomNumber, @Param("weekDay")WeekDay weekDay, @Param("startTime")Integer StartTime, @Param("roomCheck")Boolean roomCheck);
 
 
 }

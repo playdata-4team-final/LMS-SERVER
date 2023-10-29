@@ -50,39 +50,42 @@ public class LectureService {
 
     //강의 등록 요청(교수)
     @Transactional
-    public ResponseEntity<LmsResponse<String>> requestLecture(ProfessorLectureRequest request) {
-        String professorId = request.getProfessorId(); // UUID를 문자열로 받음
+    public ResponseEntity<LmsResponse<Lecture>> requestLecture(ProfessorLectureRequest request) {
+        Long id = request.toEntity().getId();
+        try {
+            String professorId = request.getProfessorId();
+            Long majorId = request.getMajorId();
+            Professor existingProfessor = professorRepository.findByProfessorId(professorId).orElse(null);
+            Major existingMajor = majorRepository.findById(majorId).orElse(null);
 
-        Long majorId = request.getMajorId();
-        Professor existingProfessor = professorRepository.findByProfessorId(professorId).orElse(null);
-        Major existingMajor = majorRepository.findById(majorId).orElse(null);
-        List<Lecture> allLectureById = lectureRepository.findAllLectureById(professorId);
-
-        if (!allLectureById.isEmpty()) {
-            if (allLectureById.get(0).getMajor().getMajorName().equals(existingMajor.getMajorName())) {
-                throw new DuplicateException("이미 신청했거나 대기중인 전공입니다.");
+            if (existingProfessor == null || existingMajor == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new LmsResponse<>(HttpStatus.NOT_FOUND, null, null, new NotFoundException("전공이나 등록된 교수 정보가 없습니다.").getErrorMsg(), LocalDateTime.now()));
             }
-        }//DUPLICATE ERROR
 
-        if (existingProfessor == null || existingMajor == null) {
-            throw new NotFoundException("해당되는 유저나 전공이 없습니다."); //NOT FOUND ERROR
+            Lecture newLecture = Lecture.builder()
+                    .lectureName(request.toEntity().getLectureName())
+                    .status(request.toEntity().getStatus())
+                    .maximumNumber(request.toEntity().getMaximumNumber())
+                    .score(request.toEntity().getScore())
+                    .lectureComment(request.toEntity().getLectureComment())
+                    .lectureDate(request.toEntity().getLectureDate())
+                    .semester(request.toEntity().getSemester())
+                    .professor(existingProfessor)
+                    .major(existingMajor)
+                    .build();
+
+            Lecture savedLecture = lectureRepository.save(newLecture);
+
+            return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, savedLecture, null, null, LocalDateTime.now()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new LmsResponse<>(HttpStatus.BAD_REQUEST, null, e.getMessage(), "알 수 없는 에러 발생", LocalDateTime.now()));
         }
-
-        Lecture newLecture = Lecture.builder()
-                .lectureName(request.toEntity().getLectureName())
-                .status(request.toEntity().getStatus())
-                .maximumNumber(request.toEntity().getMaximumNumber())
-                .score(request.toEntity().getScore())
-                .lectureComment(request.toEntity().getLectureComment())
-                .lectureDate(request.toEntity().getLectureDate())
-                .semester(request.toEntity().getSemester())
-                .professor(existingProfessor) // 기존 Professor를 참조합니다.
-                .major(existingMajor) // 기존 Major를 참조합니다.
-                .build();
-
-        lectureRepository.save(newLecture);
-        return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, null, null, null, LocalDateTime.now()));
     }
+
+
+
 
 
     //전공 요청(교수)
@@ -127,9 +130,9 @@ public class LectureService {
             majorList.addAll(majorsForResult);
 
             // 응답 반환
-            return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, majorList, "성공", null, LocalDateTime.now()));
+            return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, majorList, null, null, LocalDateTime.now()));
         } catch (Exception e) {
-            return ResponseEntity.ok()
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new LmsResponse<>(HttpStatus.BAD_REQUEST, null, e.getMessage(), "알 수 없는 에러 발생", LocalDateTime.now()));
         }
     }
@@ -199,19 +202,29 @@ public class LectureService {
 
     // 강의 요청 목록 조회(교수)
     @Transactional
-    public LmsResponse<List<AllLectureRes>> agreeLectureFindById(String id) {
-        List<Lecture> allLectureById = lectureRepository.findAllLectureById(id);
-        if (allLectureById.isEmpty()) {
-            System.out.println("신청 대기 중인 강의가 없습니다."); //에러처리 해야됨
+    public ResponseEntity<LmsResponse<List<AllLectureRes>>> agreeLectureFindById(String id) {
+        try {
+            List<Lecture> allLectureById = lectureRepository.findAllLectureById(id);
+            if (allLectureById.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new LmsResponse<>(HttpStatus.NOT_FOUND, null, null, new NotFoundException("승인대기 중인 과목이 없습니다.").getErrorMsg(), LocalDateTime.now()));
+            }
+
+            List<AllLectureRes> resultList = new ArrayList<>();
+
+            for (Lecture lecture : allLectureById) {
+                AllLectureRes allLectureRes = new AllLectureRes(lecture);
+                resultList.add(allLectureRes);
+            }
+
+            return ResponseEntity.ok(new LmsResponse<>(HttpStatus.ACCEPTED, resultList, null, null, LocalDateTime.now()));
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new LmsResponse<>(HttpStatus.BAD_REQUEST, new ArrayList<>(), null, "알수 없는 에러 발생", LocalDateTime.now()));
+
         }
 
-        List<AllLectureRes> resultList = new ArrayList<>();
-
-        for (Lecture lecture : allLectureById) {
-            resultList.add(new AllLectureRes(lecture));
-        }
-
-        return new LmsResponse<>(HttpStatus.ACCEPTED, resultList, null, null, LocalDateTime.now());
     }
 
 
@@ -220,82 +233,118 @@ public class LectureService {
     public ResponseEntity<LmsResponse<String>> cancelLecture(ProfessorLectureRequest request) {
         try {
             List<Lecture> allLectureById = lectureRepository.findAllLectureById(request.toEntity().getProfessor().getId());
-            if (allLectureById.isEmpty()) {
-                throw new NotFoundException("요청 대기중인 강의가 없습니다.");
+            if (allLectureById.size() == 0) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new LmsResponse<>(HttpStatus.NOT_FOUND, null, null, new NotFoundException("승인대기 중인 강의가 없습니다.").getErrorMsg(), LocalDateTime.now()));
             }
+
             lectureRepository.delete(request.toEntity());
             return ResponseEntity.ok(new LmsResponse<>(HttpStatus.ACCEPTED, "", null, null, LocalDateTime.now()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new LmsResponse<>(HttpStatus.BAD_REQUEST, null, null, null, LocalDateTime.now()));
+                    .body(new LmsResponse<>(HttpStatus.BAD_REQUEST, null, null, new MethodException("알수 없는 에러 발생").getErrorMsg(), LocalDateTime.now()));
         }
     }
 
 
     // 강의 요청 목록 전체 조회(어드민)
     @Transactional
-    public LmsResponse<List<AllLectureRes>> findAllLecture() {
-        List<Lecture> allList = lectureRepository.findAllList();
-        if (allList.isEmpty()) {
-            System.out.println("요청 대기중인 강의 목록이 없습니다."); //에러처리 필요함
+    public ResponseEntity<LmsResponse<List<AllLectureRes>>> findAllLecture() {
+        try {
+            List<Lecture> allList = lectureRepository.findAllList();
+
+            if (allList.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new LmsResponse<>(HttpStatus.NOT_FOUND, null, null, null, LocalDateTime.now()));
+            }
+
+            List<AllLectureRes> resultList = new ArrayList<>();
+
+            for (Lecture lecture : allList) {
+                resultList.add(new AllLectureRes(lecture));
+            }
+
+            return ResponseEntity.ok(new LmsResponse<>(HttpStatus.ACCEPTED, resultList, null, null, LocalDateTime.now()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new LmsResponse<>(HttpStatus.BAD_REQUEST, null, null, new MethodException("알수 없는 에러 발생").getErrorMsg(), LocalDateTime.now()));
         }
-
-        List<AllLectureRes> resultList = new ArrayList<>();
-
-        for (Lecture lecture : allList) {
-            resultList.add(new AllLectureRes(lecture));
-        }
-
-        return new LmsResponse<>(HttpStatus.ACCEPTED, resultList, null, null, LocalDateTime.now());
     }
 
     // 전공 목록 전체 조회(어드민)
     @Transactional
     public ResponseEntity<LmsResponse<List<AllMajorRes>>> findAllMajors() {
-        List<Major> all = majorRepository.findAll();
-        if (all.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new LmsResponse<>(HttpStatus.NOT_FOUND, null, null, null, LocalDateTime.now()));
+        try {
+            List<Major> all = majorRepository.findAll();
+            if (all.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new LmsResponse<>(HttpStatus.NOT_FOUND, null, null, null, LocalDateTime.now()));
+            }
+
+            List<AllMajorRes> resultList = new ArrayList<>();
+
+            for (Major major : all) {
+                resultList.add(new AllMajorRes(major));
+            }
+
+            return ResponseEntity.ok(new LmsResponse<>(HttpStatus.ACCEPTED, resultList, null, null, LocalDateTime.now()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new LmsResponse<>(HttpStatus.BAD_REQUEST, null, null, new MethodException("알수 없는 에러 발생").getErrorMsg(), LocalDateTime.now()));
         }
-
-        List<AllMajorRes> resultList = new ArrayList<>();
-
-        for (Major major : all) {
-            resultList.add(new AllMajorRes(major));
-        }
-
-        return ResponseEntity.ok(new LmsResponse<>(HttpStatus.ACCEPTED, resultList, null, null, LocalDateTime.now()));
     }
 
 
     //강의 요청 승인(어드민)
     @Transactional
-    public void acceptLecture(AdminLectureRequest request) {
-        List<Lecture> allList = lectureRepository.findAllList();
+    public ResponseEntity<LmsResponse<String>> acceptLecture(AdminLectureRequest request) {
+        try {
+            Optional<Lecture> byId = lectureRepository.findById(request.getLectureId());
 
-        if (allList.isEmpty() ||
-                allList.stream().anyMatch(lecture -> lecture.getStatus().equals(Status.DENIED) || lecture.getStatus().equals(Status.ACCEPT))) {
-            System.out.println("요청 대기중인 강의가 없거나 이미 처리된 강의가 있습니다"); // 에러 처리 필요함.
+            if (byId.get() ==null ||
+                    byId.get().getStatus().equals(Status.DENIED) || byId.get().getStatus().equals(Status.ACCEPT)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new LmsResponse<>(HttpStatus.NOT_FOUND, "", null, new NotFoundException("강의가 이미 처리 되었습니다.").getErrorMsg(), LocalDateTime.now()));
+            }
+            Lecture lecture = lectureRepository.updateAcceptLecture(request.toEntity().getId(), request.getRoomNumber(), request.getWeekDay(), request.getStartTime(), request.getRoomCheck());
+            if (byId.get() == lecture ) {
+                return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                        .body(new LmsResponse<>(HttpStatus.BAD_GATEWAY, null, null, new MethodException("알 수 없는 에러 발생").getErrorMsg(), LocalDateTime.now()));
+            }
 
+            return ResponseEntity.ok(new LmsResponse<>(HttpStatus.ACCEPTED, "", null, null, LocalDateTime.now()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new LmsResponse<>(HttpStatus.BAD_REQUEST, null, null, "알수 없는 에러 발생", LocalDateTime.now()));
         }
 
-        lectureRepository.updateLecture(request.getLectureId(), request.getRoomNumber(), request.getWeekDay(), request.getStartTime(), request.getRoomCheck());
     }
 
 
     //강의 요청 거부(어드민)
     @Transactional
-    public void denyLecture(AdminLectureRequest request) {
-        List<Lecture> allList = lectureRepository.findAllList();
+    public ResponseEntity<LmsResponse<String>> denyLecture(AdminLectureRequest request) {
+        try {
+            Optional<Lecture> byId = lectureRepository.findById(request.getLectureId());
 
-        if (allList.isEmpty() ||
-                allList.stream().anyMatch(lecture -> lecture.getStatus().equals(Status.DENIED) || lecture.getStatus().equals(Status.ACCEPT))) {
-            System.out.println("요청 대기중인 강의가 없거나 이미 처리된 강의가 있습니다");
+            if (byId.get() ==null ||
+                    byId.get().getStatus().equals(Status.DENIED) || byId.get().getStatus().equals(Status.ACCEPT)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new LmsResponse<>(HttpStatus.NOT_FOUND, "", null, new NotFoundException("강의가 이미 처리 되었습니다.").getErrorMsg(), LocalDateTime.now()));
+            }
+            Lecture lecture = lectureRepository.updateDenyLecture(request.toEntity().getId(), request.getRoomNumber(), request.getWeekDay(), request.getStartTime(), request.getRoomCheck());
+            if (byId.get() == lecture ) {
+                return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                        .body(new LmsResponse<>(HttpStatus.BAD_GATEWAY, null, null, new MethodException("알 수 없는 에러 발생").getErrorMsg(), LocalDateTime.now()));
+            }
+
+            return ResponseEntity.ok(new LmsResponse<>(HttpStatus.ACCEPTED, "", null, null, LocalDateTime.now()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new LmsResponse<>(HttpStatus.BAD_REQUEST, null, null, "알수 없는 에러 발생", LocalDateTime.now()));
         }
-
-        lectureRepository.save(request.toEntity());
-
     }
+
 
     //전공 요청 승인(어드민)
     @Transactional
