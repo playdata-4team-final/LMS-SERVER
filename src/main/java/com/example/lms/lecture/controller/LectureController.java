@@ -1,6 +1,5 @@
 package com.example.lms.lecture.controller;
 
-
 import com.example.lms.domain.response.LmsResponse;
 import com.example.lms.lecture.domain.entity.Lecture;
 import com.example.lms.lecture.domain.request.AdminLectureRequest;

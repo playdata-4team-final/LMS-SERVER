@@ -1,47 +1,33 @@
 package com.example.lms.lecture.service;
 
-import com.example.lms.admin.repository.AdminRepository;
-import com.example.lms.lecture.domain.entity.Lecture;
-import com.example.lms.lecture.domain.entity.Semester;
 import com.example.lms.lecture.domain.entity.Status;
-import com.example.lms.lecture.domain.request.ProfessorLectureRequest;
 import com.example.lms.lecture.repository.LectureRepository;
 import com.example.lms.major.entity.Major;
 import com.example.lms.major.repository.MajorRepository;
 import com.example.lms.professor.entity.Professor;
 import com.example.lms.professor.repository.ProfessorRepository;
-
 import com.example.lms.room.repository.RoomRepository;
 import com.example.lms.schedule.repository.ScheduleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class LectureServiceTest {
-
     @MockBean
     private MajorRepository majorRepository;
     @MockBean
     private ProfessorRepository professorRepository;
 
-    @MockBean LectureRepository lectureRepository;
+    @MockBean
+    LectureRepository lectureRepository;
 
     @MockBean
     ScheduleRepository scheduleRepository;
@@ -77,13 +63,75 @@ class LectureServiceTest {
 
     }
 
-    @Transactional
     @Test
-    void requestLecture(){
-
-
+    void requestLecture() {
     }
 
+    @Test
+    void requestMajor() {
+    }
 
+    @Test
+    void cancelMajor() {
+    }
+
+    @Test
+    void approvedMajorFindById() {
+    }
+
+    @Test
+    void agreeLectureFindById() {
+    }
+
+    @Test
+    void cancelLecture() {
+    }
+
+    @Test
+    void findAllHoldingLecture() {
+    }
+
+    @Test
+    void findAllAcceptLecture() {
+    }
+
+    @Test
+    void denyLecture() {
+    }
+
+    @Test
+    void findAllMajors() {
+    }
+
+    @Test
+    void acceptMajor() {
+    }
+
+    @Test
+    void denyMajor() {
+    }
+
+    @Test
+    void acceptLecture() {
+    }
+
+    @Test
+    void changeAcceptLecture() {
+    }
+
+    @Test
+    void changeAcceptMajor() {
+    }
+
+    @Test
+    void changeDenyLecture() {
+    }
+
+    @Test
+    void changeDenyMajor() {
+    }
+
+    @Test
+    void deleteMajorForeignKey() {
+    }
 }
-
