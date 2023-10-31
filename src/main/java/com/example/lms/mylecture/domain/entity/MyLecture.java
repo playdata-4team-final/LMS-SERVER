@@ -1,6 +1,6 @@
 package com.example.lms.mylecture.domain.entity;
 
-import com.example.lms.lecture.entity.Lecture;
+import com.example.lms.lecture.domain.entity.Lecture;
 import com.example.lms.professor.entity.Professor;
 import com.example.lms.student.entity.Student;
 import jakarta.persistence.*;

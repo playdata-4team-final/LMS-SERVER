@@ -1,8 +1,8 @@
 package com.example.lms.mylecture.service;
 
+import com.example.lms.mylecture.repository.MyLectureRepository;
 import com.example.lms.mylecture.domain.entity.MyLecture;
 import com.example.lms.mylecture.domain.request.MyLectureRequest;
-import com.example.lms.mylecture.repository.MyLectureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +18,11 @@ public class MyLectureService {
     private final MyLectureRepository myLectureRepository;
 
     @Transactional
-    public List<MyLecture> getMyLecturesByStudent(UUID studentId) {
+    public List<MyLecture> getMyLecturesByStudent(String studentId) {
         return myLectureRepository.findByStudentId(studentId);
     }
     @Transactional
-    public List<MyLecture> getMyLecturesByProfessor(UUID professorId) {
+    public List<MyLecture> getMyLecturesByProfessor(String professorId) {
         return myLectureRepository.findByProfessorId(professorId);
     }
     @Transactional

@@ -1,6 +1,6 @@
 package com.example.lms.grade.entity;
 
-import com.example.lms.lecture.entity.Lecture;
+import com.example.lms.lecture.domain.entity.Lecture;
 import com.example.lms.student.entity.Student;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -19,13 +19,13 @@ public class MyLectureController {
 
     // 학생이 수강 중인 내강의 목록 조회
     @GetMapping("/students/{studentId}")
-    public ResponseEntity<List<MyLecture>> getMyLecturesByStudent(@PathVariable UUID studentId) {
+    public ResponseEntity<List<MyLecture>> getMyLecturesByStudent(@PathVariable String studentId) {
         List<MyLecture> myLectures = myLectureService.getMyLecturesByStudent(studentId);
         return new ResponseEntity<>(myLectures, HttpStatus.OK);
     }
 // 교수가 진행 중인 내강의 목록 조회
     @GetMapping("/professors/{professorId}")
-    public ResponseEntity<List<MyLecture>> getMyLecturesByProfessor(@PathVariable UUID professorId) {
+    public ResponseEntity<List<MyLecture>> getMyLecturesByProfessor(@PathVariable String professorId) {
         List<MyLecture> myLectures = myLectureService.getMyLecturesByProfessor(professorId);
         return new ResponseEntity<>(myLectures, HttpStatus.OK);
     }

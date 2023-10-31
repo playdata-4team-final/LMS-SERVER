@@ -1,6 +1,6 @@
 package com.example.lms.mylecture.domain.request;
 
-import com.example.lms.lecture.entity.Lecture;
+import com.example.lms.lecture.domain.entity.Lecture;
 import com.example.lms.mylecture.domain.entity.MyLecture;
 import com.example.lms.professor.entity.Professor;
 import com.example.lms.student.entity.Student;
@@ -16,8 +16,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class MyLectureRequest {
-    private UUID studentId;
-    private UUID professorId;
+    private String studentId;
+    private String professorId;
     private Long lectureId;
 
     public MyLecture toEntity(){

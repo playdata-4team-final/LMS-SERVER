@@ -1,6 +1,5 @@
-package com.example.lms.student.entity;
+package com.example.lms.admin.entity;
 
-import com.example.lms.major.entity.Major;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,21 +14,14 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Student {
+public class Admin {
 
     @Id
     @Column(columnDefinition = "VARCHAR(36)", unique = true)
     private String id;
-    private String studentName;
-    //학년
-    private Integer year;
-    private Integer studentNumber;
+    private Long lectureId;
     @Column(unique = true)
     private String email;
-    @Column(unique = true)
-    private String phNumber;
 
-    @OneToOne
-    private Major major;
+
 }
-
