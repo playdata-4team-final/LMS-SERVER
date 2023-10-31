@@ -1,4 +1,4 @@
-package com.example.lms.student.entity;
+package com.example.lms.student.domain.entity;
 
 import com.example.lms.major.entity.Major;
 import jakarta.persistence.*;

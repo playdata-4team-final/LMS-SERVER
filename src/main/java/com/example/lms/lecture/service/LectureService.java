@@ -5,10 +5,7 @@ import com.example.lms.domain.response.LmsResponse;
 import com.example.lms.exception.ClientException;
 import com.example.lms.lecture.domain.entity.Lecture;
 import com.example.lms.lecture.domain.entity.Status;
-import com.example.lms.lecture.domain.request.AdminLectureRequest;
-import com.example.lms.lecture.domain.request.AdminMajorRequest;
-import com.example.lms.lecture.domain.request.ProfessorLectureRequest;
-import com.example.lms.lecture.domain.request.ProfessorMajorRequest;
+import com.example.lms.lecture.domain.request.*;
 import com.example.lms.lecture.domain.response.AllLectureRes;
 import com.example.lms.lecture.domain.response.AllMajorRes;
 import com.example.lms.lecture.dto.AllLectureDto;
@@ -19,6 +16,8 @@ import com.example.lms.lecture.repository.LectureRepository;
 import com.example.lms.major.entity.Major;
 import com.example.lms.major.exception.MethodException;
 import com.example.lms.major.repository.MajorRepository;
+import com.example.lms.mylecture.domain.entity.MyLecture;
+import com.example.lms.mylecture.repository.MyLectureRepository;
 import com.example.lms.professor.dto.ProfessorDto;
 import com.example.lms.professor.repository.ProfessorRepository;
 import com.example.lms.room.entity.Room;
@@ -26,11 +25,11 @@ import com.example.lms.room.repository.RoomRepository;
 import com.example.lms.schedule.entity.Schedule;
 import com.example.lms.schedule.entity.WeekDay;
 import com.example.lms.schedule.repository.ScheduleRepository;
+import com.example.lms.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +57,12 @@ public class LectureService {
 
     @Autowired
     private final ProfessorRepository professorRepository;
+
+    @Autowired
+    private final MyLectureRepository myLectureRepository;
+
+    @Autowired
+    private final StudentRepository studentRepository;
 
     //강의 등록 요청(교수)
     @Transactional
@@ -426,7 +431,38 @@ public class LectureService {
         }
     }
 
+    @Transactional
+    public Boolean registLecture(RegistClassRequest request){
+        //강의 id로 강의 가져옴
+        Lecture lecture = lectureRepository.findById(request.getLectureId()).get();
+        //값 없으면 끝
+        if (lecture == null)
+            return false;
 
+        //강의 들을 수 있나 체크
+        if (checkLectureNumber(lecture.getId(), lecture.getMaximumNumber())){
+            //강의 정보랑 request 정보로 내 강의 생성
+            MyLecture mylecture = MyLecture.builder()
+                    .lecture(lecture)
+                    .student(studentRepository.findById(request.getStudentId()).get())
+                    .professor(lecture.getProfessor())
+                    .build();
+
+            myLectureRepository.save(mylecture);
+            return true;
+        }
+
+        return false;
+    }
+
+    private Boolean checkLectureNumber(Long lectureId, int maxNumber){
+
+        List<MyLecture> list = myLectureRepository.findByLectureId(lectureId);
+        if (list != null && list.size() < maxNumber)
+            return true;
+        else
+            return false;
+    }
 }
 
 

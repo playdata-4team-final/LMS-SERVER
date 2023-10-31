@@ -3,10 +3,7 @@ package com.example.lms.lecture.controller;
 
 import com.example.lms.domain.response.LmsResponse;
 import com.example.lms.lecture.domain.entity.Lecture;
-import com.example.lms.lecture.domain.request.AdminLectureRequest;
-import com.example.lms.lecture.domain.request.AdminMajorRequest;
-import com.example.lms.lecture.domain.request.ProfessorLectureRequest;
-import com.example.lms.lecture.domain.request.ProfessorMajorRequest;
+import com.example.lms.lecture.domain.request.*;
 import com.example.lms.lecture.domain.response.AllLectureRes;
 import com.example.lms.lecture.domain.response.AllMajorRes;
 import com.example.lms.lecture.dto.AllMajorDto;
@@ -150,6 +147,15 @@ public class LectureController {
             return new LmsResponse<>(HttpStatus.OK, "", "서비스 실패", "에러 발생", LocalDateTime.now());
         }
         return new LmsResponse<>(HttpStatus.OK, s, "서비스 성공", "에러 없음", LocalDateTime.now());
+    }
+
+    //수강신청
+    @PostMapping("/registClass")
+    public LmsResponse<Boolean> registClass(@RequestBody RegistClassRequest request){
+
+        var result = lectureService.registLecture(request);
+
+        return new LmsResponse<>(HttpStatus.OK, result, "", "", LocalDateTime.now());
     }
 
 }

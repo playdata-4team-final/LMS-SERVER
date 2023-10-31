@@ -3,13 +3,11 @@ package com.example.lms.mylecture.domain.request;
 import com.example.lms.lecture.domain.entity.Lecture;
 import com.example.lms.mylecture.domain.entity.MyLecture;
 import com.example.lms.professor.entity.Professor;
-import com.example.lms.student.entity.Student;
+import com.example.lms.student.domain.entity.Student;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
