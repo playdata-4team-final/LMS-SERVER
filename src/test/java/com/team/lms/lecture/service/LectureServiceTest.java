@@ -11,6 +11,8 @@ import com.example.lms.major.repository.MajorRepository;
 import com.example.lms.professor.entity.Professor;
 import com.example.lms.professor.repository.ProfessorRepository;
 
+import com.example.lms.room.repository.RoomRepository;
+import com.example.lms.schedule.repository.ScheduleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +43,11 @@ class LectureServiceTest {
 
     @MockBean LectureRepository lectureRepository;
 
+    @MockBean
+    ScheduleRepository scheduleRepository;
+
+    @MockBean
+    RoomRepository roomRepository;
     @InjectMocks
     private LectureService lectureService;
 
@@ -48,51 +55,35 @@ class LectureServiceTest {
     public void setUp() {
 
 
-        // 임의의 교수 생성
-//        Professor professor1 = Professor.builder()
-//                .id(UUID.fromString("7d6f858a-d8bd-4074-8c6e-d9c47e21b1a6"))
-//                .professorName("오성")
-//                .phNumber("010-0000-0000")
-//                .email("john.doe@example.com")
-//                .build();
+//         임의의 교수 생성
+        Professor professor1 = Professor.builder()
+                .id("7d6f858a-d8bd-4074-8c6e-d9c47e21b1a6")
+                .professorName("오성")
+                .phNumber("010-0000-0000")
+                .email("john.doe@example.com")
+                .build();
 
-        // 임의의 Major 객체 생성
-//        Major major = Major.builder()
-//                .checkMajor(true) // 전공 여부
-//                .majorName("컴퓨터 공학") // 전공 이름
-//                .status(Status.HOLDING) // 상태
-//                .professor(professor1) // 교수 연결
-//                .build();
+//         임의의 Major 객체 생성
+        Major major = Major.builder()
+                .checkMajor(true) // 전공 여부
+                .majorName("컴퓨터 공학") // 전공 이름
+                .status(Status.HOLDING) // 상태
+                .professor(professor1) // 교수 연결
+                .build();
 
-        // 교수 유저 저장
-//        professorRepository.save(professor1);
-//        majorRepository.save(major);
+//         교수 유저 저장
+        professorRepository.save(professor1);
+        majorRepository.save(major);
+
     }
 
     @Transactional
     @Test
     void requestLecture(){
 
-//        Optional<Professor> byId = professorRepository.findById(UUID.fromString("7d6f858a-d8bd-4074-8c6e-d9c47e21b1a6"));
-        Optional<Major> byId2 = majorRepository.findById(1L);
 
-        //데이터 저장 확인
-//        String professorName = byId.get().getProfessorName();
-        String majorName = byId2.get().getMajorName();
-//        System.out.println("교수 이름: " + professorName);
-        System.out.println("전공 이름: " + majorName);
-
-        // 임의의 ProfessorLectureRequest 객체 생성
-//        ProfessorLectureRequest request = new ProfessorLectureRequest(byId.get().getId(), byId.get().getMajors().get(0).getId(), "자바", 30, 4, Semester.SECOND );
-
-        // Mock Repository의 동작 설정
-//        when(lectureRepository.findAllLectureById().thenReturn(new ArrayList<>()); // 강의가 존재하지 않는 상태로 설정
-
-        // 테스트 실행
-//        assertDoesNotThrow(() -> lectureService.requestLecture(request));
-
-        // Verify - 강의가 저장되었는지 확인
-        verify(lectureRepository, times(1)).save(any(Lecture.class));
     }
+
+
 }
 

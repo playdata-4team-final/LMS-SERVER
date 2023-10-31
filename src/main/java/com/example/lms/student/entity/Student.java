@@ -20,12 +20,9 @@ public class Student {
     @Id
     @Column(columnDefinition = "VARCHAR(36)", unique = true)
     private String id;
-
     private String studentName;
-
-    private Integer year;
     //학년
-
+    private Integer year;
     private Integer studentNumber;
     @Column(unique = true)
     private String email;

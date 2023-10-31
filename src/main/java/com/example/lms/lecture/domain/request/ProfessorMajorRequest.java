@@ -18,13 +18,10 @@ import java.util.UUID;
 public class ProfessorMajorRequest {
 
     private String professorId;
-    private List<String> majorNames;
+    private String majorName;
     private Boolean checkMajor;
 
-    public List<Major> toEntity() {
-        List<Major> majors = new ArrayList<>();
-
-        for (String majorName : majorNames) {
+    public Major toEntity() {
             Major major = Major
                     .builder()
                     .professor(Professor.builder().id(professorId).build())
@@ -32,10 +29,8 @@ public class ProfessorMajorRequest {
                     .checkMajor(checkMajor)
                     .status(Status.HOLDING)
                     .build();
-            majors.add(major);
-        }
 
-        return majors;
+        return major;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.lms.lecture.domain.response;
 
+import com.example.lms.lecture.dto.AllMajorDto;
 import com.example.lms.major.entity.Major;
 import com.example.lms.lecture.domain.entity.Status;
 import lombok.Getter;
@@ -17,13 +18,11 @@ public class AllMajorRes {
     private Status status;
     private String professorId;
 
-    public AllMajorRes(Major major) {
+    public AllMajorRes(AllMajorDto major) {
         this.id = major.getId();
         this.checkMajor = major.getCheckMajor();
         this.majorName = major.getMajorName();
         this.status = major.getStatus();
-        this.professorId = major.getProfessor().getId();
+        this.professorId = major.getProfessorId();
     }
-
-
 }

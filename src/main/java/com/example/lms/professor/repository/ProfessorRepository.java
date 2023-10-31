@@ -1,5 +1,6 @@
 package com.example.lms.professor.repository;
 
+import com.example.lms.professor.dto.ProfessorDto;
 import com.example.lms.professor.entity.Professor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,5 +14,6 @@ import java.util.UUID;
 public interface ProfessorRepository
         extends JpaRepository<Professor, String> {
     @Query("select p from Professor as p where  p.id = :professorId")
-    public Optional<Professor> findByProfessorId(@Param("professorId") String professorId);
+    ProfessorDto findByProfessorId(@Param("professorId") String professorId);
+
 }

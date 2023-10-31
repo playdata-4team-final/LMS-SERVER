@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
-
     @ExceptionHandler(ClientException.class)
     protected ResponseEntity<Object> handleClientException(
             ClientException ex) {
@@ -46,7 +45,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodException(
             MethodException ex) {
         String responseBody = "Method Exception: " + ex.getMessage();
-        return new ResponseEntity<>(responseBody, HttpStatus.BAD_GATEWAY);
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
 

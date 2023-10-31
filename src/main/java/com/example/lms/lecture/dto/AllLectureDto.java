@@ -10,7 +10,6 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@AllArgsConstructor
 @Getter
 @Setter
 public class AllLectureDto {
@@ -27,18 +26,16 @@ public class AllLectureDto {
     private String professorName;
 
 
-    public AllLectureDto(Lecture lecture) {
-
-        this.id = lecture.getId();
-        this.lectureName = lecture.getLectureName();
-        this.status = lecture.getStatus();
-        this.maximumNumber = lecture.getMaximumNumber();
-        this.score = lecture.getScore();
-        this.lectureComment = lecture.getLectureComment();
-        this.lectureDate = lecture.getLectureDate();
-        this.semester = lecture.getSemester();
-        this.majorName = lecture.getMajor().getMajorName();
-        this.professorName = lecture.getProfessor().getProfessorName();
+    public AllLectureDto(Long id, String lectureName, Status status, Integer maximumNumber, Integer score, String lectureComment, LocalDateTime lectureDate, Semester semester, String majorName, String professorName) {
+        this.id = id;
+        this.lectureName = lectureName;
+        this.status = status;
+        this.maximumNumber = maximumNumber;
+        this.score = score;
+        this.lectureComment = lectureComment;
+        this.lectureDate = lectureDate;
+        this.semester = semester;
+        this.majorName = majorName;
+        this.professorName = professorName;
     }
-
 }

@@ -23,14 +23,13 @@ import java.util.UUID;
 @Builder
 public class AdminLectureRequest {
 
-    private String adminId;
     private Long lectureId;
-    private Long roomNumber;
+    private Long roomId;
+    private Long scheduleId;
     private WeekDay weekDay;
     private Integer startTime;
+    private Integer classPeriod;
     private Boolean roomCheck;
-    private Status status;
-
 
     public Lecture toEntity(){
         return Lecture
@@ -38,15 +37,24 @@ public class AdminLectureRequest {
                 .id(lectureId)
                 .room(Room
                         .builder()
-                        .roomNumber(roomNumber)
+                        .id(roomId)
                         .schedule(Schedule
                                 .builder()
+                                .id(scheduleId)
                                 .weekDay(weekDay)
+                                .classPeriod(classPeriod)
+                                .lecture(Lecture
+                                        .builder()
+                                        .id(lectureId)
+                                        .build())
+                                .room(Room
+                                        .builder()
+                                        .id(roomId)
+                                        .build())
                                 .startTime(startTime)
-                                .roomCheck(roomCheck)
                                 .build())
+                        .roomCheck(roomCheck)
                         .build())
-                .status(status)
                 .build();
     }
 

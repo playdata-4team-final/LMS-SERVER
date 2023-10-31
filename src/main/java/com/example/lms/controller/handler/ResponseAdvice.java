@@ -10,6 +10,8 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.time.LocalDateTime;
+
 @RestControllerAdvice
 public class ResponseAdvice implements ResponseBodyAdvice<Object> {
 
@@ -26,7 +28,7 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
 
 
         // 기본적으로는 원본 응답 바디를 그대로 반환합니다.
-        return ResponseUtil.success(body, HttpStatus.ACCEPTED, "", "");
+        return ResponseUtil.success(body, HttpStatus.OK, "서비스 처리 완료" , new Exception());
 
     }
 

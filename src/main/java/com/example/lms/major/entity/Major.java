@@ -17,9 +17,10 @@ public class Major {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Boolean checkMajor;
 
-    @Column(unique = true)//여기서 전공은 유일한 값을 가져야함.
+    @Column(unique = true, nullable = false)//여기서 전공은 유일한 값을 가져야함.
     private String majorName;
 
     @Enumerated(EnumType.STRING)
@@ -28,6 +29,15 @@ public class Major {
     @ManyToOne
     private Professor professor;
 
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
+    }
+
+    public void removeMajor(Major major) {
+        major.setProfessor(null);
+    }
+
+    public  void changeStatus(Status status){ this.status=status;}
     @Override
     public String toString() {
         return "Major{" +

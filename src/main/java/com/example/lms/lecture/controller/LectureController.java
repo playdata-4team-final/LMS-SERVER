@@ -9,12 +9,11 @@ import com.example.lms.lecture.domain.request.ProfessorLectureRequest;
 import com.example.lms.lecture.domain.request.ProfessorMajorRequest;
 import com.example.lms.lecture.domain.response.AllLectureRes;
 import com.example.lms.lecture.domain.response.AllMajorRes;
+import com.example.lms.lecture.dto.AllMajorDto;
 import com.example.lms.lecture.service.LectureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,132 +25,133 @@ public class LectureController {
 
     private final LectureService lectureService;
 
+
+
     //요청강의 조회(교수)
     @GetMapping("/findLecture")
-    public ResponseEntity<LmsResponse<List<AllLectureRes>>> agreeLectureFindById(@RequestParam("id") String id) {
-        ResponseEntity<LmsResponse<List<AllLectureRes>>> lmsResponseResponseEntity = lectureService.agreeLectureFindById(id);
-        HttpStatus status = lmsResponseResponseEntity.getBody().getCode();
-        List<AllLectureRes> dataList = lmsResponseResponseEntity.getBody().getData();
-        String errorMsg = lmsResponseResponseEntity.getBody().getErrorMsg();
-        if (dataList==null){
-            return ResponseEntity.ok(new LmsResponse<>(status, new ArrayList<>(), "서비스 에러", errorMsg, LocalDateTime.now()));
+    public LmsResponse<List<AllLectureRes>> agreeLectureFindById(@RequestParam("id") String id) {
+        List<AllLectureRes> allLectureRes = lectureService.agreeLectureFindById(id);
+        if (allLectureRes.size() ==0){
+            return new LmsResponse<>(HttpStatus.OK, new ArrayList<>(), "서비스 실패", "에러 발생", LocalDateTime.now());
         }
-        return ResponseEntity.ok(new LmsResponse<>(status, dataList, "에러 없음", "서비스 성공", LocalDateTime.now()));
+        return new LmsResponse<>(HttpStatus.OK, allLectureRes, "서비스 성공", "에러 없음", LocalDateTime.now());
     }
 
     //요청전공 조회(교수)
-    @GetMapping("/findApprovedMajor")
-    public ResponseEntity<LmsResponse<List<AllMajorRes>>> approvedMajorFindById(@RequestParam("id") String id) {
-        ResponseEntity<LmsResponse<List<AllMajorRes>>> lmsResponseResponseEntity = lectureService.approvedMajorFindById(id);
-        HttpStatus status = lmsResponseResponseEntity.getBody().getCode();
-        List<AllMajorRes> dataList = lmsResponseResponseEntity.getBody().getData();
-        String errorMsg = lmsResponseResponseEntity.getBody().getErrorMsg();
-        if (dataList==null){
-            return ResponseEntity.ok(new LmsResponse<>(status, new ArrayList<>(), "서비스 에러", errorMsg, LocalDateTime.now()));
+    @GetMapping("/findMajor")
+    public LmsResponse<List<AllMajorRes>> approvedMajorFindById(@RequestParam("id") String id) {
+        List<AllMajorRes> allMajorRes = lectureService.approvedMajorFindById(id);
+        if (allMajorRes.size()==0){
+            return new LmsResponse<>(HttpStatus.OK, new ArrayList<>(), "서비스 실패", "에러 발생", LocalDateTime.now());
         }
-        return ResponseEntity.ok(new LmsResponse<>(status, dataList, "에러 없음", "서비스 성공", LocalDateTime.now()));
+        return new LmsResponse<>(HttpStatus.OK, allMajorRes, "서비스 성공", "에러 없음", LocalDateTime.now());
     }
 
     //강의 요청(교수)
     @PostMapping("/requestLecture")
-    public ResponseEntity<LmsResponse<String>> requestLecture(@RequestBody ProfessorLectureRequest request) {
-        ResponseEntity<LmsResponse<Lecture>> lmsResponseResponseEntity = lectureService.requestLecture(request);
-        HttpStatus status = lmsResponseResponseEntity.getBody().getCode();
-        Lecture data = lmsResponseResponseEntity.getBody().getData();
-        String errorMsg = lmsResponseResponseEntity.getBody().getErrorMsg();
-        if (lmsResponseResponseEntity.getStatusCode()!=HttpStatus.OK){
-            return ResponseEntity.ok(new LmsResponse<>(status, "","서비스 에러",errorMsg, LocalDateTime.now()));
+    public LmsResponse<String> requestLecture(@RequestBody ProfessorLectureRequest request) {
+        Lecture lecture = lectureService.requestLecture(request);
+        if (lecture == null){
+            return new LmsResponse<>(HttpStatus.OK, "","서비스 실패", "에러 발생", LocalDateTime.now());
         }
-        return ResponseEntity.ok(new LmsResponse<>(status, data.toString(), "서비스 성공","에러 없음", LocalDateTime.now()));
+        return new LmsResponse<>(HttpStatus.OK, lecture.toString(), "서비스 성공", "에러 없음", LocalDateTime.now());
     }
 
     //전공 요청(교수)
     @PostMapping("/requestMajor")
-    public ResponseEntity<LmsResponse<String>> requestMajor(@RequestBody List<ProfessorMajorRequest> requests) {
-        ResponseEntity<LmsResponse<Object>> lmsResponseResponseEntity = lectureService.requestMajor(requests);
-        HttpStatus status = lmsResponseResponseEntity.getBody().getCode();
-        Object data = lmsResponseResponseEntity.getBody().getData();
-        String errorMsg = lmsResponseResponseEntity.getBody().getErrorMsg();
-        if (data ==null){
-            return ResponseEntity.ok(new LmsResponse<>(status, "", "서비스 에러", errorMsg, LocalDateTime.now()));
+    public LmsResponse<String> requestMajor(@RequestBody List<ProfessorMajorRequest> requests) {
+        List<AllMajorDto> allMajorDtos = lectureService.requestMajor(requests);
+
+        if (allMajorDtos ==null){
+            return new LmsResponse<>(HttpStatus.OK, "","서비스 실패", "에러 발생", LocalDateTime.now());
         }
-        return ResponseEntity.ok(new LmsResponse<>(status, data.toString(), "서비스 성공", "에러 없음", LocalDateTime.now()));
+        return new LmsResponse<>(HttpStatus.OK, allMajorDtos.toString(), "서비스 성공", "에러 없음", LocalDateTime.now());
     }
 
     //요청 전공 취소(교수)
     @PostMapping("/cancelMajor")
-    public ResponseEntity<LmsResponse<String>> cancelMajor(@RequestBody List<ProfessorMajorRequest> requests) {
-        ResponseEntity<LmsResponse<String>> lmsResponseResponseEntity = lectureService.cancelMajor(requests);
-        HttpStatus status = lmsResponseResponseEntity.getBody().getCode();
-        String data = lmsResponseResponseEntity.getBody().getData();
-        String errorMsg = lmsResponseResponseEntity.getBody().getErrorMsg();
-        if (data ==null){
-            return ResponseEntity.ok(new LmsResponse<>(status, "", "서비스 에러", errorMsg, LocalDateTime.now()));
+    public LmsResponse<String> cancelMajor(@RequestBody List<ProfessorMajorRequest> requests) {
+        String s = lectureService.cancelMajor(requests);
+
+        if (s ==null){
+            return new LmsResponse<>(HttpStatus.OK, "","서비스 실패", "에러 발생", LocalDateTime.now());
         }
-        return ResponseEntity.ok(new LmsResponse<>(status, data, "서비스 성공", "에러 없음", LocalDateTime.now()));
+        return new LmsResponse<>(HttpStatus.OK, s, "서비스 성공", "에러 없음", LocalDateTime.now());
     }
+
     //강의 요청 취소(교수)
-    @DeleteMapping("/cancelLecture")
-    public ResponseEntity<LmsResponse<Void>> cancelLecture(@RequestBody ProfessorLectureRequest request) {
-        lectureService.cancelLecture(request);
+    @PostMapping("/cancelLecture")
+    public LmsResponse<String> cancelLecture(@RequestBody ProfessorLectureRequest request) {
+        String s = lectureService.cancelLecture(request);
 
-        return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, null, null, null , LocalDateTime.now()));
+        if (s ==null){
+            return new LmsResponse<>(HttpStatus.OK, "", "서비스 실패", "에러 발생", LocalDateTime.now());
+        }
+        return new LmsResponse<>(HttpStatus.OK, s, "서비스 성공", "에러 없음", LocalDateTime.now());
     }
 
-    //강의 조회(관리자)
-    @GetMapping("/findAllLectures")
-    public ResponseEntity<LmsResponse<List<AllLectureRes>>> findAllLecture() {
-        List<AllLectureRes> lectures = lectureService.findAllLecture().getData();
-        return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, lectures, null, null, LocalDateTime.now()));
+    //강의 조회(어드민)
+    @GetMapping("/findAllAcceptLectures")
+    public LmsResponse<List<AllLectureRes>> findAllAcceptLecture() {
+        List<AllLectureRes> lectures = lectureService.findAllAcceptLecture();
+        if (lectures.size() ==0){
+            return new LmsResponse<>(HttpStatus.OK, new ArrayList<>(), "서비스 실패", "에러 발생", LocalDateTime.now());
+        }
+        return new LmsResponse<>(HttpStatus.OK, lectures, "서비스 성공", "에러 없음", LocalDateTime.now());
+    }
+
+    //강의 조회(모든 유저)
+    @GetMapping("/findAllHoldingLectures")
+    public LmsResponse<List<AllLectureRes>> findAllHoldingLecture() {
+        List<AllLectureRes> lectures = lectureService.findAllHoldingLecture();
+        if (lectures.size() ==0){
+            return new LmsResponse<>(HttpStatus.OK, new ArrayList<>(), "서비스 실패", "에러 발생", LocalDateTime.now());
+        }
+        return new LmsResponse<>(HttpStatus.OK, lectures, "서비스 성공", "에러 없음", LocalDateTime.now());
     }
 
     //전공 조회(관리자)
     @GetMapping("/findAllMajors")
-    public ResponseEntity<LmsResponse<List<AllMajorRes>>> findAllMajors() {
-        HttpStatus status = lectureService.findAllMajors().getBody().getCode();
-        List<AllMajorRes> dataList = lectureService.findAllMajors().getBody().getData();
-        String errorMsg = lectureService.findAllMajors().getBody().getErrorMsg();
-        if (dataList ==null){
-            return ResponseEntity.ok(new LmsResponse<>(status, new ArrayList<>(), "서비스 에러", errorMsg, LocalDateTime.now()));
+    public LmsResponse<List<AllMajorRes>> findAllMajors() {
+        List<AllMajorRes> allMajors = lectureService.findAllMajors();
+
+        if (allMajors ==null){
+            return new LmsResponse<>(HttpStatus.OK, new ArrayList<>(), "서비스 에러", "", LocalDateTime.now());
         }
-        return ResponseEntity.ok(new LmsResponse<>(status, dataList, "서비스 성공", "에러없음", LocalDateTime.now()));
+        return new LmsResponse<>(HttpStatus.OK, allMajors, "서비스 성공", "에러 없음", LocalDateTime.now());
     }
-
-
 
     //강의 수락(관리자)
     @PostMapping("/acceptLecture")
-    public ResponseEntity<LmsResponse<Void>> acceptLecture(@RequestBody AdminLectureRequest request) {
-        lectureService.acceptLecture(request);
-        return ResponseEntity.ok(new LmsResponse<>(HttpStatus.OK, null, null, null, LocalDateTime.now()));
-    }
+    public LmsResponse<String> acceptLecture(@RequestBody AdminLectureRequest request) {
+        String s = lectureService.acceptLecture(request);
 
+        if (s ==null){
+            return new LmsResponse<>(HttpStatus.OK, "", "서비스 실패", "에러 발생", LocalDateTime.now());
+        }
+        return new LmsResponse<>(HttpStatus.OK, s, "서비스 성공", "에러 없음", LocalDateTime.now());
+    }
     //강의 수락(관리자)
     @PostMapping("/acceptMajor")
-    public ResponseEntity<LmsResponse<String>> acceptMajor(@RequestBody AdminMajorRequest request) {
-        ResponseEntity<LmsResponse<String>> lmsResponseResponseEntity = lectureService.acceptMajor(request);
-        HttpStatus status = lmsResponseResponseEntity.getBody().getCode();
-        String data = lmsResponseResponseEntity.getBody().getData();
-        String errorMsg = lmsResponseResponseEntity.getBody().getErrorMsg();
-        if (data ==null){
-            return ResponseEntity.ok(new LmsResponse<>(status, ""  , "서비스 에러", errorMsg, LocalDateTime.now()));
-        }
-        return ResponseEntity.ok(new LmsResponse<>(status, data, "서비스 성공", "에러없음", LocalDateTime.now()));
-    }
+    public LmsResponse<String> acceptMajor(@RequestBody AdminMajorRequest request) {
+        String s = lectureService.acceptMajor(request);
 
+        if (s ==null){
+            return new LmsResponse<>(HttpStatus.OK, "", "서비스 실패", "에러 발생", LocalDateTime.now());
+        }
+        return new LmsResponse<>(HttpStatus.OK, s, "서비스 성공", "에러 없음", LocalDateTime.now());
+    }
 
     //강의 거절(관리자)
     @PostMapping("/denyMajor")
-    public ResponseEntity<LmsResponse<String>> denyMajor(@RequestBody AdminMajorRequest request) {
-        ResponseEntity<LmsResponse<String>> lmsResponseResponseEntity = lectureService.acceptMajor(request);
-        HttpStatus status = lmsResponseResponseEntity.getBody().getCode();
-        String data = lmsResponseResponseEntity.getBody().getData();
-        String errorMsg = lmsResponseResponseEntity.getBody().getErrorMsg();
-        if (data ==null){
-            return ResponseEntity.ok(new LmsResponse<>(status, ""  , "서비스 에러", errorMsg, LocalDateTime.now()));
+    public LmsResponse<String> denyMajor(@RequestBody AdminMajorRequest request) {
+        String s = lectureService.denyMajor(request);
+        if (s ==null){
+            return new LmsResponse<>(HttpStatus.OK, "", "서비스 실패", "에러 발생", LocalDateTime.now());
         }
-        return ResponseEntity.ok(new LmsResponse<>(status, data, "서비스 성공", "에러없음", LocalDateTime.now()));
+        return new LmsResponse<>(HttpStatus.OK, s, "서비스 성공", "에러 없음", LocalDateTime.now());
     }
+
 }
 
 

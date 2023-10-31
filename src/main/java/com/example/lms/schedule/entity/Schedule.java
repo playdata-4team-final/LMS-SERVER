@@ -21,7 +21,7 @@ public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Enumerated(EnumType.STRING)
     private WeekDay weekDay;
     @Column
     @Min(1) @Max(8)
@@ -29,7 +29,6 @@ public class Schedule {
     @Column
     @Min(1) @Max(5)
     private Integer startTime;
-    private Boolean roomCheck; // 강의실 사용 여부
 
     @OneToOne
     private Lecture lecture;
@@ -37,4 +36,16 @@ public class Schedule {
     @OneToOne
     private Room room;
 
+
+    public void setClassPeriod(Integer classPeriod) {
+        this.classPeriod = classPeriod;
+    }
+
+    public void changeLecture(Lecture lecture){this.lecture = lecture;}
+    public void changeWeekDay(WeekDay weekDay){
+        this.weekDay = weekDay;
+    }
+    public void changeStartTime(Integer startTime){this.startTime = startTime;}
+    public void changeClassPeriod(Integer classPeriod){this.classPeriod = classPeriod;}
+    public void changeRoom(Room room){this.room = room;}
 }

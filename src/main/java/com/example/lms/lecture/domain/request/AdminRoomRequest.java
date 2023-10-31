@@ -1,6 +1,6 @@
 package com.example.lms.lecture.domain.request;
 
-import com.example.lms.major.entity.Major;
+import com.example.lms.room.entity.Room;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,15 +10,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AdminMajorRequest {
+public class AdminRoomRequest {
 
-    private String adminId;
-    private Long majorId;
+    private Long roomId;
 
-    public Major toEntity() {
-        return Major
+    public Room toEntity(){
+        return Room
                 .builder()
-                .id(majorId)
+                .id(roomId)
                 .build();
     }
 }
