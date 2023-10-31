@@ -2,7 +2,7 @@ package com.example.lms.lecture.service;
 
 
 import com.example.lms.domain.response.LmsResponse;
-import com.example.lms.exception.ClientException;
+import com.example.lms.global.exception.ClientException;
 import com.example.lms.lecture.domain.entity.Lecture;
 import com.example.lms.lecture.domain.entity.Status;
 import com.example.lms.lecture.domain.request.AdminLectureRequest;
@@ -13,11 +13,11 @@ import com.example.lms.lecture.domain.response.AllLectureRes;
 import com.example.lms.lecture.domain.response.AllMajorRes;
 import com.example.lms.lecture.dto.AllLectureDto;
 import com.example.lms.lecture.dto.AllMajorDto;
-import com.example.lms.lecture.exception.DuplicateException;
-import com.example.lms.lecture.exception.NotFoundException;
+import com.example.lms.global.exception.DuplicateException;
+import com.example.lms.global.exception.NotFoundException;
 import com.example.lms.lecture.repository.LectureRepository;
 import com.example.lms.major.entity.Major;
-import com.example.lms.major.exception.MethodException;
+import com.example.lms.global.exception.MethodException;
 import com.example.lms.major.repository.MajorRepository;
 import com.example.lms.professor.dto.ProfessorDto;
 import com.example.lms.professor.repository.ProfessorRepository;
@@ -30,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -355,13 +354,14 @@ public class LectureService {
         Schedule schedule = scheduleRepository.findById(scheduleId).get();
 
         room.changeRoomCheck(roomCheck);
+        room.changeLecture(lecture);
+        room.changeSchedule(schedule);
 
 
         schedule.changeWeekDay(weekDay);
         schedule.changeClassPeriod(classPeriod);
         schedule.changeStartTime(startTime);
         schedule.changeRoom(room);
-        schedule.changeLecture(lecture);
 
 
         lecture.changeStatus(Status.ACCEPT);

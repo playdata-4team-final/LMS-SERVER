@@ -1,10 +1,10 @@
-package com.example.lms.exception.handler;
+package com.example.lms.global.exception.handler;
 
-import com.example.lms.exception.ClientException;
-import com.example.lms.lecture.exception.DuplicateException;
-import com.example.lms.lecture.exception.NotFoundException;
-import com.example.lms.major.exception.MethodException;
+import com.example.notice.global.exception.ClientException;
+import com.example.notice.global.exception.DuplicateException;
+import com.example.notice.global.exception.MethodException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-
     @ExceptionHandler(ClientException.class)
     protected ResponseEntity<Object> handleClientException(
             ClientException ex) {
@@ -26,10 +25,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(ChangeSetPersister.NotFoundException.class)
     protected ResponseEntity<Object> handleNotFondException(
-            NotFoundException ex) {
+            ChangeSetPersister.NotFoundException ex) {
         String responseBody = "NotFound Exception: " + ex.getMessage();
         return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
     }

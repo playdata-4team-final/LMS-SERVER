@@ -29,19 +29,12 @@ public class Schedule {
     @Column
     @Min(1) @Max(5)
     private Integer startTime;
-
-    @OneToOne
-    private Lecture lecture;
-
     @OneToOne
     private Room room;
-
 
     public void setClassPeriod(Integer classPeriod) {
         this.classPeriod = classPeriod;
     }
-
-    public void changeLecture(Lecture lecture){this.lecture = lecture;}
     public void changeWeekDay(WeekDay weekDay){
         this.weekDay = weekDay;
     }

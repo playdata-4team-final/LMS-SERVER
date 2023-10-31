@@ -1,4 +1,4 @@
-package com.example.lms.exception;
+package com.example.lms.global.exception;
 
 import lombok.Getter;
 
@@ -11,4 +11,5 @@ public class ClientException extends RuntimeException {
         super(s);
         this.errorMsg = s;
     }
+
 }

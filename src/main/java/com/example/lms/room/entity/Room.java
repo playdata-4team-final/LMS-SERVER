@@ -30,12 +30,10 @@ public class Room {
     @OneToOne
     private Lecture lecture;
 
-    private void setMethod(Boolean roomCheck){
-        this.roomCheck = roomCheck;
-    }
 
-    public void changeRoomCheck(Boolean roomCheck){
-        setMethod(roomCheck);
-    }
+    public void changeRoomCheck(Boolean roomCheck){this.roomCheck = roomCheck;}
+
+    public void changeSchedule(Schedule schedule){this.schedule = schedule;}
+    public void changeLecture(Lecture lecture){this.lecture=lecture;}
 
 }

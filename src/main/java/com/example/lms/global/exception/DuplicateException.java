@@ -1,4 +1,4 @@
-package com.example.lms.lecture.exception;
+package com.example.lms.global.exception;
 
 import lombok.Getter;
 

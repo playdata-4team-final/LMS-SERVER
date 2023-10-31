@@ -1,6 +1,6 @@
-package com.example.lms.controller.handler;
+package com.example.lms.global.responsehandler;
 
-import com.example.lms.util.ResponseUtil;
+import com.example.notice.global.util.ResponseUtil;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,8 +9,6 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-
-import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class ResponseAdvice implements ResponseBodyAdvice<Object> {
