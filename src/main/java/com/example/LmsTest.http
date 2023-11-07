@@ -1,0 +1,31 @@
+### 테스트
+GET http://localhost:8000/api/v1/grade
+Accept: application/json
+Cookie: AccessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiYmRhZWIxZS1iODA2LTQ3NmItODRlZC1lNWQ5ZGUyMGMxYTYiLCJyb2xlIjoiU1RVREVOVCIsImV4cCI6MTY5ODk4NTgwMSwiaWF0IjoxNjk4OTgyMjAxfQ.uCly8q1v2Jz_dkBxklBE_txdhgWZz3gtZR6cz8Z5j48
+
+### 테스트
+GET http://localhost:53753/api/v1/lecture/findAllHoldingLectures
+Accept: application/json
+
+### 테스트2
+POST http://localhost:8000/api/v1/grade/1
+Content-Type: application/json
+Cookie: AccessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5OTZkMWNhMC1jN2NkLTRjMmEtOGQwZC03MDNhNTlhOGFkYzQiLCJyb2xlIjoiU1RVREVOVCIsImV4cCI6MTY5OTMzMTM2MywiaWF0IjoxNjk5MzI3NzYzfQ.HLb3Li74Vk5YpY-vnxYbkU1ABooCyC54ZTFzKd3Z_QI
+
+[
+  {
+    "studentId" : "f0919e44-0cff-4e84-a5ef-6095df627f6a",
+    "score" : 300
+  }
+
+]
+
+### 테스트2
+PUT http://localhost:8000/api/v1/grade/1
+Content-Type: application/json
+Cookie: AccessToken=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5OTZkMWNhMC1jN2NkLTRjMmEtOGQwZC03MDNhNTlhOGFkYzQiLCJyb2xlIjoiU1RVREVOVCIsImV4cCI6MTY5OTMzODg5MywiaWF0IjoxNjk5MzM1MjkzfQ.gTWpAdmfzE8R-X08Z1F5xBD9jwDYXScTh-Y8hy4nFdU
+
+{
+  "studentId" : "f0919e44-0cff-4e84-a5ef-6095df627f6a",
+  "score" : 0
+}

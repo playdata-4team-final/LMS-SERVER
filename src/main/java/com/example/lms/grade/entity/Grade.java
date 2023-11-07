@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class grade {
+public class Grade {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,9 +22,17 @@ public class grade {
 
     private Double score;
 
-    @OneToOne
+    @ManyToOne
     private Lecture lecture;
 
     @ManyToOne
     private Student student;
+
+    public void saveCredit(Credit credit) {
+        this.credit = credit;
+    }
+
+    public void updateScore(Double score) {
+        this.score = score;
+    }
 }
