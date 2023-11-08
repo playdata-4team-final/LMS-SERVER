@@ -1,7 +1,6 @@
 package com.example.lms.lecture.service;
 
-
-import com.example.lms.domain.response.LmsResponse;
+import com.example.lms.global.domain.response.LmsResponse;
 import com.example.lms.global.exception.ClientException;
 import com.example.lms.lecture.domain.entity.Lecture;
 import com.example.lms.lecture.domain.entity.Status;
@@ -241,23 +240,23 @@ public class LectureService {
 
 
     //강의 요청 거부(어드민)
-    @Transactional
-    public LmsResponse<String> denyLecture(AdminLectureRequest request) {
+    @Transactional // 수정 필요함
+    public String denyLecture(AdminLectureRequest request) {
         try {
             Optional<Lecture> byId = lectureRepository.findById(request.toEntity().getId());
 
             if (byId.get() ==null ||
                     byId.get().getStatus().equals(Status.DENIED) || byId.get().getStatus().equals(Status.ACCEPT)) {
-                return new LmsResponse<>(HttpStatus.NOT_FOUND, "", null, new NotFoundException("강의가 이미 처리 되었습니다.").getErrorMsg(), LocalDateTime.now());
+               throw new NotFoundException("강의가 이미 처리 되었습니다.");
             }
             int check = changeDenyLecture(request.getLectureId());
             if (check == 0) {
-                return new LmsResponse<>(HttpStatus.BAD_GATEWAY, null, null, new MethodException("알 수 없는 에러 발생").getErrorMsg(), LocalDateTime.now());
+               throw new MethodException("알 수 없는 에러 발생");
             }
 
-            return new LmsResponse<>(HttpStatus.ACCEPTED, "", null, null, LocalDateTime.now());
+           return  "Deny Success!";
         } catch (Exception e) {
-            return new LmsResponse<>(HttpStatus.BAD_REQUEST, null, null, "강의 등록 거부 실패(관리자)", LocalDateTime.now());
+           throw new RuntimeException(e);
         }
     }
 

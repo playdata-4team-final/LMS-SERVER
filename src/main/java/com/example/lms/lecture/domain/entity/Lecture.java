@@ -42,11 +42,6 @@ public class Lecture {
     @ManyToOne
     private Professor professor;
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-
     public  void changeStatus(Status status){ this.status=status;}
 
     public void changeLecutreDate(LocalDateTime lectureDate){this.lectureDate= lectureDate;}

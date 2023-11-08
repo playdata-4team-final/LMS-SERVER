@@ -27,7 +27,7 @@ public class AllMajorDto {
     }
 
     // 생성자 추가
-    public AllMajorDto(Long id, Boolean checkMajor, String majorName, Status status, String someOtherField) {
+    public AllMajorDto(Long id, Boolean checkMajor, String majorName, Status status) {
         this.id = id;
         this.checkMajor = checkMajor;
         this.majorName = majorName;

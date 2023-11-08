@@ -29,6 +29,10 @@ public class Schedule {
     @Column
     @Min(1) @Max(5)
     private Integer startTime;
+
+    @OneToOne
+    private Lecture lecture;
+
     @OneToOne
     private Room room;
 
