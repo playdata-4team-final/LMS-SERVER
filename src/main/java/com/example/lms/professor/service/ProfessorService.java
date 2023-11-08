@@ -2,6 +2,7 @@ package com.example.lms.professor.service;
 
 import com.example.lms.lecture.domain.entity.Lecture;
 import com.example.lms.professor.dto.ProfessorDto;
+import com.example.lms.professor.dto.ProfessorRequest;
 import com.example.lms.professor.repository.ProfessorRepository;
 import com.example.lms.professor.entity.Professor;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,9 @@ public class ProfessorService {
 
     public void uploadLecture(UUID professorId, Lecture lecture){
 
+    }
+
+    public void saveProfessor(ProfessorRequest request) {
+        professorRepository.save(request.toEntity());
     }
 }
