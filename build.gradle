@@ -30,12 +30,15 @@ dependencies {
 //    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 //    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.modelmapper:modelmapper:2.4.5'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mockito:mockito-core:3.12.4'
+    implementation 'javax.validation:validation-api:2.0.1.Final' // 혹은 더 최신 버전으로 대체 가능
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
 }
 
 tasks.named('test') {
