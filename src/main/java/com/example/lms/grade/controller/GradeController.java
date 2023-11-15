@@ -1,6 +1,6 @@
 package com.example.lms.grade.controller;
 
-import com.example.lms.domain.response.LmsResponse;
+import com.example.lms.global.domain.response.LmsResponse;
 import com.example.lms.grade.dto.GradeRequest;
 import com.example.lms.grade.dto.ProfessorGradeResponse;
 import com.example.lms.grade.dto.StudentGradeResponse;
