@@ -21,6 +21,7 @@ public class Room {
     @Column(unique = true)
     private String roomNumber;
 
+    @OneToOne
     private Schedule schedule;
 
     @Column(columnDefinition = "boolean default false")
