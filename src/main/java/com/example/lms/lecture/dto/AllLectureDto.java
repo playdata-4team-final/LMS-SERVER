@@ -3,6 +3,8 @@ package com.example.lms.lecture.dto;
 import com.example.lms.lecture.domain.entity.Lecture;
 import com.example.lms.lecture.domain.entity.Semester;
 import com.example.lms.lecture.domain.entity.Status;
+import com.example.lms.major.entity.Major;
+import com.example.lms.professor.entity.Professor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,4 +40,23 @@ public class AllLectureDto {
         this.majorName = majorName;
         this.professorName = professorName;
     }
+
+    public Lecture toEntity(){
+
+        return Lecture
+                .builder()
+                .id(id)
+                .lectureName(lectureName)
+                .status(status)
+                .maximumNumber(maximumNumber)
+                .score(score)
+                .lectureComment(lectureComment)
+                .lectureDate(lectureDate)
+                .semester(semester)
+                .major(Major.builder().majorName(majorName).build())
+                .professor(Professor.builder().professorName(professorName).build())
+                .build();
+
+    }
+
 }

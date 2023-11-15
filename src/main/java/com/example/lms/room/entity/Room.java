@@ -19,17 +19,16 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
-    private Long roomNumber;
-    @OneToOne
+    private String roomNumber;
+
     private Schedule schedule;
+
     @Column(columnDefinition = "boolean default false")
     private Boolean roomCheck;
-    @OneToOne
-    private Lecture lecture;
 
 
     public void changeRoomCheck(Boolean roomCheck){this.roomCheck = roomCheck;}
     public void changeSchedule(Schedule schedule){this.schedule = schedule;}
-    public void changeLecture(Lecture lecture){this.lecture = lecture;}
+
 
 }

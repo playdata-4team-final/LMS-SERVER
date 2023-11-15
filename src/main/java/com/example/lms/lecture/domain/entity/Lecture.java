@@ -35,16 +35,20 @@ public class Lecture {
     private LocalDateTime lectureDate;
     @Enumerated(EnumType.STRING)
     private Semester semester;
+    @Column
+    private int year;
     @OneToOne
     private Room room;
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "major_id")
     private Major major;
     @ManyToOne
     private Professor professor;
+    private LocalDateTime acceptedAt;
 
     public  void changeStatus(Status status){ this.status=status;}
 
-    public void changeLecutreDate(LocalDateTime lectureDate){this.lectureDate= lectureDate;}
+    public  void changeAcceptedAt(LocalDateTime acceptedAt){ this.acceptedAt = acceptedAt;}
 
     public void changeRoom(Room room){this.room = room;}
     @Override

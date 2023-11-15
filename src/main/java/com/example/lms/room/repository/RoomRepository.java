@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface RoomRepository
         extends JpaRepository<Room, Long> {
 
-    @Query("select r from Room as r where r.id = :roomId and r.roomCheck = false ")
-    Optional<Room> findByIdandRoomCheck(@Param("roomId")Long roomId);
+    @Query("select r from Room as r where r.roomNumber = :roomNumber and r.roomCheck = false ")
+    Optional<Room> findByRoomNumber(@Param("roomNumber")String roomNumber);
 
 }

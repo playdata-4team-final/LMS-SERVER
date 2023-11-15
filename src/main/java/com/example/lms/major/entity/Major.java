@@ -1,5 +1,6 @@
 package com.example.lms.major.entity;
 
+import com.example.lms.lecture.domain.entity.Lecture;
 import com.example.lms.lecture.domain.entity.Status;
 import com.example.lms.professor.entity.Professor;
 import jakarta.persistence.*;
@@ -7,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,6 +31,9 @@ public class Major {
 
     @ManyToOne
     private Professor professor;
+
+    @OneToMany(mappedBy = "major")
+    private List<Lecture> lectures;
 
     public void setProfessor(Professor professor) {
         this.professor = professor;
