@@ -1,13 +1,9 @@
 package com.example.lms.lecture.service;
 
-import com.example.lms.global.domain.response.LmsResponse;
 import com.example.lms.global.exception.ClientException;
 import com.example.lms.lecture.domain.entity.Lecture;
 import com.example.lms.lecture.domain.entity.Status;
-import com.example.lms.lecture.domain.request.AdminLectureRequest;
-import com.example.lms.lecture.domain.request.AdminMajorRequest;
-import com.example.lms.lecture.domain.request.ProfessorLectureRequest;
-import com.example.lms.lecture.domain.request.ProfessorMajorRequest;
+import com.example.lms.lecture.domain.request.*;
 import com.example.lms.lecture.domain.response.AllLectureRes;
 import com.example.lms.lecture.domain.response.AllMajorRes;
 import com.example.lms.lecture.dto.AllLectureDto;
@@ -28,12 +24,12 @@ import com.example.lms.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,7 +71,8 @@ public class LectureService {
 
             return save;
         } catch (Exception e) {
-           throw new RuntimeException();
+            e.printStackTrace();
+           throw new RuntimeException("강의 저장 실패");
         }
     }
 
@@ -85,9 +82,7 @@ public class LectureService {
 
     //전공 요청(교수)
     @Transactional
-    public List<AllMajorDto> requestMajor(List<ProfessorMajorRequest> requests) {
-        List<AllMajorDto> majorList = new ArrayList<>();
-            for (ProfessorMajorRequest request : requests) {
+    public String requestMajor(ProfessorMajorRequest request) {
                 String professorId = request.getProfessorId();
                 String majorName = request.getMajorName();
                 AllMajorDto allMajorById = majorRepository.findByProfessorIdAndMajorName(professorId,majorName);
@@ -99,51 +94,49 @@ public class LectureService {
                 }
                 // 전공 생성
                 Major save = majorRepository.save(request.toEntity());
-
-                majorList.add(new AllMajorDto(save));
+                if (save == null){
+                 return "Failed RequestMajor";
                 }
-
             // 응답 반환
-            return  majorList;
+            return  "Success RequestMajor!";
     }
 
 
     //전공 등록 요청 취소(교수)
     @Transactional
-    public String cancelMajor(List<ProfessorMajorRequest> requests) {
+    public String cancelMajor(ProfessorMajorCancelRequest request) {
         try {
-            for (ProfessorMajorRequest request : requests) {
-                String professorId = request.toEntity().getProfessor().getId();
-                String majorName = request.toEntity().getMajorName();
+            if (request.getMajorIds() != null) {
+                // major 조회
+                List<AllMajorDto> byIdQuery = majorRepository.findByIdQuery(request.getMajorIds());
 
-                if (majorName !=null) {
-                    // major 조회
-                    AllMajorDto majorDto = majorRepository.findByProfessorIdAndMajorName(professorId, majorName);
+                if (!byIdQuery.isEmpty()) {
 
-                    if (majorDto != null) {
-
-                        // professor와 연관 관계 해제
+                    // professor와 연관 관계 모두 해제
+                    for (AllMajorDto majorDto : byIdQuery) {
                         deleteMajorForeignKey(majorDto.getId());
-
-                        // major 삭제
-                        majorRepository.deleteByMajorId(majorDto.getId());
-
-                    }else {
-                        //major 가 없을때
-                       throw new NotFoundException("전공이 없습니다.");
                     }
+
+                    // major 삭제
+                    majorRepository.deleteByMajorId(request.getMajorIds());
+
                 } else {
-                    // request 오류
-                    throw new ClientException("잘못된 요청입니다.");
+                    // major가 없을 때
+                    throw new NotFoundException("전공이 없습니다.");
                 }
+            } else {
+                // request 오류
+                throw new ClientException("잘못된 요청입니다.");
             }
+
             // 모든 요청이 성공했을 때 응답 반환
             return "Cancel Success";
         } catch (Exception e) {
-            // 모든 요청이 실패했을 때 도 OK를 던져야함 대신 ERROR가 뭔지 알수 있어야함.
-           throw new RuntimeException();
+            // 모든 요청이 실패했을 때 도 OK를 던져야 함 대신 ERROR가 뭔지 알 수 있어야 함.
+            throw new RuntimeException(e.getMessage());
         }
     }
+
 
 
 
@@ -185,19 +178,16 @@ public class LectureService {
 
     //강의 등록 요청 취소(교수)
     @Transactional
-    public String cancelLecture(ProfessorLectureRequest request) {
+    public String cancelLecture(ProfessorLectureCancelRequest request) {
         try {
             if (request == null) {
-                return null;
+                throw new ClientException("잘못된 요청입니다.");
             }
-            List<AllLectureDto> allLectureDTOsByProfessorId = lectureRepository.findAllLectureDTOsByProfessorId(request.toEntity().getProfessor().getId());
-            if (allLectureDTOsByProfessorId.size() == 0) {
-                throw new NotFoundException("승인대기 중인 강의가 없습니다.");
-            }
-            lectureRepository.deleteByProfessorId(request.toEntity().getProfessor().getId());
+            lectureRepository.deleteByLectureId(request.getLectureIds());
             return "Cancel Success!";
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -249,7 +239,7 @@ public class LectureService {
                     byId.get().getStatus().equals(Status.DENIED) || byId.get().getStatus().equals(Status.ACCEPT)) {
                throw new NotFoundException("강의가 이미 처리 되었습니다.");
             }
-            int check = changeDenyLecture(request.getLectureId());
+            int check = changeDenyLecture(request.getLecture().getId());
             if (check == 0) {
                throw new MethodException("알 수 없는 에러 발생");
             }
@@ -334,8 +324,7 @@ public class LectureService {
                 throw new NotFoundException("처리되지 않은 강의 목록이 없습니다.");
             }
 
-            int check = changeAcceptLecture(request.toEntity().getId(), request.toEntity().getRoom().getId(), request.toEntity().getRoom().getSchedule().getId(), request.toEntity().getRoom().getSchedule().getWeekDay(),request.toEntity().getRoom().getSchedule().getClassPeriod(), request.toEntity().getRoom().getSchedule().getStartTime() ,request.toEntity().getRoom().getRoomCheck());
-
+            int check = changeAcceptLecture(request);
             if (check == 0) {
                 throw new MethodException("강의 승인 실패");
             }
@@ -346,32 +335,40 @@ public class LectureService {
         }
     }
     @Transactional
-    public int changeAcceptLecture(Long lectureId, Long roomId, Long scheduleId, WeekDay weekDay, Integer classPeriod, Integer startTime, Boolean roomCheck) {
-        try{
-        Room room = roomRepository.findByIdandRoomCheck(roomId).get();
-        Lecture lecture = lectureRepository.findById(lectureId).get();
-        Schedule schedule = scheduleRepository.findById(scheduleId).get();
+    public int changeAcceptLecture(AdminLectureRequest request) {
+        try {
+            Room room = roomRepository.findByRoomNumber(request.getRoomNumber()).orElseThrow(() -> new NotFoundException("Room not found"));
+            Lecture lecture = request.getLecture();
+            WeekDay weekDay = request.getWeekDay();
+            Schedule schedule = scheduleRepository.findById(weekDay.getId()).orElseThrow(() -> new NotFoundException("Schedule not found"));
 
-        room.changeRoomCheck(roomCheck);
-        room.changeLecture(lecture);
-        room.changeSchedule(schedule);
+            room.changeRoomCheck(request.getRoomCheck());
+            room.changeSchedule(schedule);
 
+            // You can set other fields for WeekDay if needed
 
-        schedule.changeWeekDay(weekDay);
-        schedule.changeClassPeriod(classPeriod);
-        schedule.changeStartTime(startTime);
-        schedule.changeRoom(room);
+            Schedule newSchedule = Schedule.builder()
+                    .weekdays(Collections.singletonList(weekDay))
+                    .year(request.getLecture().getYear())  // Set your year logic here
+                    .lectures(Collections.singletonList(lecture))
+                    .roomId(room.getId())
+                    .build();
 
+            lecture.changeStatus(Status.ACCEPT);
+            lecture.changeAcceptedAt(LocalDateTime.now());
+            lecture.changeRoom(room);
 
-        lecture.changeStatus(Status.ACCEPT);
-        lecture.changeLecutreDate(LocalDateTime.now());
-        lecture.changeRoom(room);
-
-        return 1;
-    }catch (Exception e) {
+            return 1;
+        } catch (Exception e) {
             return 0;
         }
     }
+
+
+
+
+
+
 
     @Transactional
     public int changeAcceptMajor(Long majorId) {
@@ -391,7 +388,7 @@ public class LectureService {
 
             Lecture lecture = lectureRepository.findById(lectureId).get();
             lecture.changeStatus(Status.DENIED);
-            lecture.changeLecutreDate(LocalDateTime.now());
+            lecture.changeAcceptedAt(LocalDateTime.now());
 
             return 1;
         }catch (Exception e) {

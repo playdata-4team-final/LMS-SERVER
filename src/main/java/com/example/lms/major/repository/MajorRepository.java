@@ -13,21 +13,25 @@ public interface MajorRepository
         extends JpaRepository<Major, Long> {
 
     @Modifying
-    @Query("delete FROM Major m where m.id = :majorId")
-    void deleteByMajorId(@Param("majorId") Long majorId);
+    @Query("delete FROM Major m where m.id IN :ids")
+    void deleteByMajorId(@Param("ids") List<Long> id);
     @Query("SELECT new com.example.lms.lecture.dto.AllMajorDto(m.id, m.checkMajor, m.majorName, m.status, m.professor.id) from Major as m where m.status = com.example.lms.lecture.domain.entity.Status.HOLDING") //교수 정보도 보여줘야하니까
     List<AllMajorDto> findAllByStatus();
 
     @Query("select m FROM Major m where m.professor.id = :professorId and m.majorName = :majorName")
     AllMajorDto findByProfessorIdAndMajorName(@Param("professorId") String professorId, @Param("majorName") String majorName);
 
+    @Query("select m FROM Major m where m.majorName = :majorName")
+    AllMajorDto findByMajorName(@Param("majorName") String majorName);
+
+
     @Query("select m from Major as m where m.id = :id and m.status = com.example.lms.lecture.domain.entity.Status.HOLDING")
     AllMajorDto findByMajorIdandStatus(@Param("id")Long id);
 
-    @Query("select m from Major as m where m.professor.id = :id")
-    List<AllMajorDto> findAllMajorById(@Param("id")String id);
+    @Query("select m from Major as m where m.id IN :ids")
+    List<AllMajorDto> findByIdQuery(@Param("ids")List<Long> id);
 
-    @Query("select m from Major as m where m.professor.id = :id and m.status = com.example.lms.lecture.domain.entity.Status.HOLDING")
+    @Query("select m from Major as m where m.professor.id = :id and m.status != com.example.lms.lecture.domain.entity.Status.ACCEPT")
     List<AllMajorDto> findApprovedMajorById(@Param("id")String id);
 
 }

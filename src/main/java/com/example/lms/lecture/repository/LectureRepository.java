@@ -19,7 +19,7 @@ public interface LectureRepository
 
     //major, professor, room을 가지고 외래키로 가지고 있어서 정보를 한번에 볼려면 조인해야함.
     //그 중에서도 major는 이름만, professor는 교수 이름만, room은 강의실 넘버만 가져오고싶음
-    @Query("SELECT new com.example.lms.lecture.dto.AllLectureDto(l.id, l.lectureName, l.status, l.maximumNumber, l.score, l.lectureComment, l.lectureDate, l.semester, l.major.majorName, l.professor.professorName) FROM Lecture l WHERE l.professor.id = :id")
+    @Query("SELECT new com.example.lms.lecture.dto.AllLectureDto(l.id, l.lectureName, l.status, l.maximumNumber, l.score, l.lectureComment, l.lectureDate, l.semester, l.major.majorName, l.professor.professorName) FROM Lecture l WHERE l.status != com.example.lms.lecture.domain.entity.Status.ACCEPT and l.professor.id = :id")
     List<AllLectureDto> findAllLectureDTOsByProfessorId(@Param("id") String id);
 
     @Query("select new com.example.lms.lecture.dto.AllLectureDto(l.id, l.lectureName, l.status, l.maximumNumber, l.score, l.lectureComment, l.lectureDate, l.semester, l.major.majorName, l.professor.professorName) FROM Lecture as l where l.status = com.example.lms.lecture.domain.entity.Status.HOLDING")
@@ -30,8 +30,11 @@ public interface LectureRepository
     List<AllLectureDto> findAllAcceptList();
 
     @Modifying
-    @Query("DELETE FROM Lecture l WHERE l.professor.id = :professorId")
-    void deleteByProfessorId(@Param("professorId") String professorId);
+    @Query("DELETE FROM Lecture l WHERE l.id IN :ids")
+    void deleteByLectureId(@Param("ids") List<Long> lectureIds);
+
+    @Query("select l from Lecture as l WHERE l.lectureName = :lectureName")
+    AllLectureDto findByLectureName(@Param("lectureName")String lectureName);
 
 
 

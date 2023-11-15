@@ -1,13 +1,26 @@
 package com.example.lms.mylecture.service;
 
+import com.example.lms.lecture.domain.entity.Lecture;
+import com.example.lms.lecture.dto.AllLectureDto;
+import com.example.lms.lecture.repository.LectureRepository;
+import com.example.lms.mylecture.domain.request.MyScheduleRequest;
 import com.example.lms.mylecture.repository.MyLectureRepository;
 import com.example.lms.mylecture.domain.entity.MyLecture;
 import com.example.lms.mylecture.domain.request.MyLectureRequest;
+import com.example.lms.professor.entity.Professor;
+import com.example.lms.room.entity.Room;
+import com.example.lms.room.repository.RoomRepository;
+import com.example.lms.schedule.entity.Schedule;
+import com.example.lms.schedule.entity.WeekDay;
+import com.example.lms.schedule.repository.ScheduleRepository;
+import com.example.lms.student.entity.Student;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -15,7 +28,19 @@ import java.util.UUID;
 public class MyLectureService {
 
 
-    private final MyLectureRepository myLectureRepository;
+    @Autowired
+    private ScheduleRepository scheduleRepository;
+
+    @Autowired
+    private LectureRepository lectureRepository;
+
+    @Autowired
+    private RoomRepository roomRepository;
+
+    @Autowired
+    private MyLectureRepository myLectureRepository;
+
+
 
     @Transactional
     public List<MyLecture> getMyLecturesByStudent(String studentId) {
@@ -36,4 +61,18 @@ public class MyLectureService {
         MyLecture myLecture = request.toEntity();
         return myLectureRepository.save(myLecture);
     }
+
+
+
+    @Transactional
+    public String saveWeeklyData(MyScheduleRequest scheduleRequest) {
+            Schedule entities = scheduleRequest.toEntities();
+        Schedule schedule = scheduleRepository.findLectureBySchedule(entities.getMemberId(), entities.getYear(), entities.getSemester()).get();
+        scheduleRepository.save(schedule);
+        return "Success Save!";
+    }
+
 }
+
+
+

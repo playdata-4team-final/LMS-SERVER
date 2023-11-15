@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.UUID;
 
 @Getter
@@ -23,39 +24,22 @@ import java.util.UUID;
 @Builder
 public class AdminLectureRequest {
 
-    private Long lectureId;
-    private Long roomId;
-    private Long scheduleId;
-    private WeekDay weekDay;
-    private Integer startTime;
-    private Integer classPeriod;
+    private Lecture lecture;
     private Boolean roomCheck;
+    private WeekDay weekDay;
+    private String roomNumber;
 
-    public Lecture toEntity(){
-        return Lecture
-                .builder()
-                .id(lectureId)
-                .room(Room
-                        .builder()
-                        .id(roomId)
-                        .schedule(Schedule
-                                .builder()
-                                .id(scheduleId)
-                                .weekDay(weekDay)
-                                .classPeriod(classPeriod)
-                                .lecture(Lecture
-                                        .builder()
-                                        .id(lectureId)
-                                        .build())
-                                .room(Room
-                                        .builder()
-                                        .id(roomId)
-                                        .build())
-                                .startTime(startTime)
+    public Lecture toEntity() {
+        return Lecture.builder()
+                .id(lecture.getId())
+                .room(Room.builder()
+                        .schedule(Schedule.builder()
+                                .weekdays(Collections.singletonList(weekDay))
+                                .lectures(Collections.singletonList(lecture))
                                 .build())
+                        .roomNumber(roomNumber)
                         .roomCheck(roomCheck)
                         .build())
                 .build();
     }
-
 }
