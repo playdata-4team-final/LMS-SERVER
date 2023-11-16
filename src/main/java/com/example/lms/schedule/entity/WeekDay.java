@@ -21,22 +21,21 @@ public class WeekDay {
     private int time;
 
     @ManyToOne
-    @JoinColumn(name="schedule_id")
     private Schedule schedule;
 
-    @Column(nullable = false)
+    @Column
     private Long monday;
 
-    @Column(nullable = false)
+    @Column
     private Long tuesday;
 
-    @Column(nullable = false)
+    @Column
     private Long wednesday;
 
-    @Column(nullable = false)
+    @Column
     private Long thursday;
 
-    @Column(nullable = false)
+    @Column
     private Long friday;
 
 

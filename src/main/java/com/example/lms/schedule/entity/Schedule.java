@@ -22,10 +22,10 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy="weekday_id")
+    @OneToMany
     private List<WeekDay> weekdays;
 
-    @OneToMany(mappedBy = "lecture_id")
+    @OneToMany
     private List<Lecture> lectures;
 
     private String memberId;
