@@ -3,9 +3,13 @@ package com.example.lms.lecture.dto;
 import com.example.lms.lecture.domain.entity.Status;
 import com.example.lms.major.entity.Major;
 import com.example.lms.professor.entity.Professor;
+import com.example.lms.professor.entity.ProfessorMajor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -15,15 +19,15 @@ public class AllMajorDto {
     private Boolean checkMajor;
     private String majorName;
     private Status status;
-    private String professorId;
+    private Professor professor;
 
     //DTO 추가
-    public AllMajorDto(Major major) {
-        this.id = major.getId();
-        this.checkMajor = major.getCheckMajor();
-        this.majorName = major.getMajorName();
-        this.status = major.getStatus();
-        this.professorId = major.getProfessor().getId();
+    public AllMajorDto(ProfessorMajor professorMajor) {
+        this.id = professorMajor.getMajor().getId();
+        this.checkMajor = professorMajor.getMajor().getCheckMajor();
+        this.majorName = professorMajor.getMajor().getMajorName();
+        this.status = professorMajor.getMajor().getStatus();
+        this.professor = professorMajor.getProfessor();
     }
 
     // 생성자 추가

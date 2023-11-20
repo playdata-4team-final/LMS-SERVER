@@ -27,4 +27,5 @@ public class ProfessorService {
     public void saveProfessor(ProfessorRequest request) {
         professorRepository.save(request.toEntity());
     }
+
 }

@@ -11,8 +11,10 @@ public class StudentService {
 
     private final StudentRepository repository;
 
-    public void saveStudent(StudentRequest request){
+
+    public String saveStudent(StudentRequest request){
         repository.save(request.toEntity());
+        return "Success!";
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.lms.student.entity;
 
 import com.example.lms.major.entity.Major;
+import com.example.lms.professor.entity.ProfessorMajor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -29,7 +31,8 @@ public class Student {
     @Column(unique = true)
     private String phNumber;
 
-    @OneToOne
-    private Major major;
+    @OneToMany
+    @JoinColumn(name = "professor_id")
+    private List<ProfessorMajor> majorList;
 }
 

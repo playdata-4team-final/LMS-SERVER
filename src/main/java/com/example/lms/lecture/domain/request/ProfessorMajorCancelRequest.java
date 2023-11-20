@@ -18,10 +18,7 @@ import java.util.stream.Collectors;
 @Builder
 public class ProfessorMajorCancelRequest {
 
-
-
     private List<Long> majorIds;
-
 
     public List<Major> toEntity(){
         return majorIds.stream()

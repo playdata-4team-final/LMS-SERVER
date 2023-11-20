@@ -6,6 +6,7 @@ import com.example.lms.lecture.domain.entity.Status;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -16,13 +17,11 @@ public class AllMajorRes {
     private Boolean checkMajor;
     private String majorName;
     private Status status;
-    private String professorId;
 
     public AllMajorRes(AllMajorDto major) {
         this.id = major.getId();
         this.checkMajor = major.getCheckMajor();
         this.majorName = major.getMajorName();
         this.status = major.getStatus();
-        this.professorId = major.getProfessorId();
     }
 }

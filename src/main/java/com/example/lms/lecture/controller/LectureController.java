@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/lecture")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class LectureController {
 
     private final LectureService lectureService;

@@ -3,6 +3,8 @@ package com.example.lms.major.entity;
 import com.example.lms.lecture.domain.entity.Lecture;
 import com.example.lms.lecture.domain.entity.Status;
 import com.example.lms.professor.entity.Professor;
+import com.example.lms.professor.entity.ProfessorMajor;
+import com.example.lms.student.entity.Student;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,20 +30,13 @@ public class Major {
 
     @Enumerated(EnumType.STRING)
     private Status status;
-
-    @ManyToOne
-    private Professor professor;
+    
 
     @OneToMany(mappedBy = "major")
     private List<Lecture> lectures;
 
-    public void setProfessor(Professor professor) {
-        this.professor = professor;
-    }
-
-    public void removeMajor(Major major) {
-        major.setProfessor(null);
-    }
+    @OneToMany(mappedBy = "major")
+    private List<ProfessorMajor> majorList;
 
     public  void changeStatus(Status status){ this.status=status;}
     @Override
@@ -51,7 +46,6 @@ public class Major {
                 ", checkMajor=" + checkMajor +
                 ", majorName='" + majorName + '\'' +
                 ", status=" + status +
-                ", professor=" + professor +
                 '}';
     }
 

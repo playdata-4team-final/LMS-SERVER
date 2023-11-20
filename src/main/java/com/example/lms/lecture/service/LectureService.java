@@ -112,10 +112,10 @@ public class LectureService {
 
                 if (!byIdQuery.isEmpty()) {
 
-                    // professor와 연관 관계 모두 해제
-                    for (AllMajorDto majorDto : byIdQuery) {
-                        deleteMajorForeignKey(majorDto.getId());
-                    }
+//                    // professor와 연관 관계 모두 해제
+//                    for (AllMajorDto majorDto : byIdQuery) {
+//                        deleteMajorForeignKey(majorDto.getId());
+//                    }
 
                     // major 삭제
                     majorRepository.deleteByMajorId(request.getMajorIds());
@@ -410,17 +410,17 @@ public class LectureService {
         }
     }
 
-    @Transactional
-    public  int deleteMajorForeignKey(Long majorId){
-        try{
-            AllMajorDto byMajorIdandStatus = majorRepository.findByMajorIdandStatus(majorId);
-            byMajorIdandStatus.setProfessorId(null);
-
-            return 1;
-        }catch (Exception e) {
-            return 0;
-        }
-    }
+//    @Transactional
+//    public  int deleteMajorForeignKey(Long majorId){
+//        try{
+//            AllMajorDto byMajorIdandStatus = majorRepository.findByMajorIdandStatus(majorId);
+//            byMajorIdandStatus.setProfessorIds(new ArrayList<>());
+//
+//            return 1;
+//        }catch (Exception e) {
+//            return 0;
+//        }
+//    }
 
 
 }

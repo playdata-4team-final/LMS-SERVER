@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,7 +29,6 @@ public class ProfessorMajorRequest {
     public Major toEntity() {
         Major major = Major
                 .builder()
-                .professor(Professor.builder().id(professorId).build())
                 .majorName(majorName)
                 .checkMajor(checkMajor)
                 .status(Status.HOLDING)

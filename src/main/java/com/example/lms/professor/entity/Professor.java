@@ -31,9 +31,8 @@ public class Professor {
     @Column(unique = true)
     private String email;
 
-    @OneToMany
-    @JoinColumn(name = "professor_id")
-    private List<Major> majorList;
+    @OneToMany(mappedBy = "professor")
+    private List<ProfessorMajor> majorList;
 
     @OneToMany(mappedBy = "professor")
     private List<Lecture> lecture;
