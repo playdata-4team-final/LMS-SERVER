@@ -18,4 +18,5 @@ public class ProfessorController {
     public void saveProfessor(@RequestBody ProfessorRequest request){
         professorService.saveProfessor(request);
     }
+
 }

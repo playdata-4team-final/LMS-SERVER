@@ -3,6 +3,7 @@ package com.example.lms.student.dto;
 import com.example.lms.major.entity.Major;
 import com.example.lms.professor.entity.ProfessorMajor;
 import com.example.lms.student.entity.Student;
+import com.example.lms.student.entity.StudentMajor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,7 +35,7 @@ public class StudentRequest {
                 .email(email)
                 .phNumber(phNumber)
                 .majorList(majorIds.stream()
-                        .map(id -> ProfessorMajor.builder().major(Major.builder().id(id).build()).build())
+                        .map(id -> StudentMajor.builder().major(Major.builder().id(id).build()).build())
                         .collect(Collectors.toList()))
                 .build();
     }

@@ -33,6 +33,6 @@ public class Student {
 
     @OneToMany
     @JoinColumn(name = "professor_id")
-    private List<ProfessorMajor> majorList;
+    private List<StudentMajor> majorList;
 }
 
